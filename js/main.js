@@ -1,28 +1,31 @@
 'use strict';
 
-var minLikes = 15;
-var maxLikes = 200;
-var countPictures = 25;
-var maxCountComments = 2;
-var minCountComments = 1;
-var maxCountCommentsInPage = 5;
+var MIN_LIKES = 15;
+var MAX_LIKES = 200;
+var COUNT_PICTURES = 25;
+var MAX_COUNT_COMMENTS = 2;
+var MIN_COUNT_COMMENTS = 1;
+var MAX_COUNT_COMMENTS_IN_PAGE = 5;
 
-var CLASS_HIDDEN = 'hidden';
-var CLASS_PICT_IMG = '.picture__img';
-var CLASS_PICT_COMMENTS = '.picture__comments';
-var CLASS_PICT_LIKES = '.picture__likes';
-var CLASS_TEMPLATE_PICTURE = '#picture';
-var CLASS_PICTURES_LIST = '.pictures';
-var CLASS_PICTURE = '.picture';
-var CLASS_SOCIAL_CAPTION = '.social__caption';
-var CLASS_SOCIAL_PICTURE = '.social__picture';
-var CLASS_SOCIAL_TEXT = '.social__text';
-var CLASS_TEMPLATE_SOCIAL_COMMENT = '.social__comment';
-var CLASS_COMMENTS_LIST = '.social__comments';
-var CLASS_LIKES_COUNT = '.likes-count';
-var CLASS_URL_BIG_PICTURE = '.big-picture__img img';
-var CLASS_BIG_PICTURE = '.big-picture';
 
+var ID_TEMPLATE_PICTURE = '#picture';
+
+var Selectors = {
+  HIDDEN: 'hidden',
+  PICT_IMG: 'picture__img',
+  PICT_COMMENTS: 'picture__comments',
+  PICT_LIKES: 'picture__likes',
+  PICTURES_LIST: 'pictures',
+  PICTURE: 'picture',
+  SOCIAL_CAPTION: 'social__caption',
+  SOCIAL_PICTURE: 'social__picture',
+  SOCIAL_TEXT: 'social__text',
+  TEMPLATE_SOCIAL_COMMENT: 'social__comment',
+  COMMENTS_LIST: 'social__comments',
+  LIKES_COUNT: 'likes-count',
+  URL_BIG_PICTURE: 'big-picture__img img',
+  BIG_PICTURE: 'big-picture',
+};
 
 var commentsMocks = ['Всё отлично!', 'В целом всё неплохо. Но не всё.',
   'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
@@ -37,7 +40,7 @@ var getRandomElement = function (list) {
 var DESCRIPTION = 'Описание фотографии';
 
 var getRandomLikes = function () {
-  return Math.floor(Math.random() * maxLikes) + minLikes;
+  return Math.floor(Math.random() * MAX_LIKES) + MIN_LIKES;
 };
 
 var generateMockingObject = function () {
@@ -50,10 +53,10 @@ var generateMockingObject = function () {
 
 var generateMocks = function () {
   var mocks = [];
-  for (var i = 0; i < countPictures; i++) {
+  for (var i = 0; i < COUNT_PICTURES; i++) {
     mocks.push(generateMockingObject());
     mocks[i].url = 'photos/' + (i + 1) + '.jpg';
-    var randomFlag = Math.floor(Math.random() * (maxCountComments + 1 - minCountComments) + minCountComments);
+    var randomFlag = Math.floor(Math.random() * (MAX_COUNT_COMMENTS + 1 - MIN_COUNT_COMMENTS) + MIN_COUNT_COMMENTS);
     for (var j = 1; j <= randomFlag; j++) {
       mocks[i].comments.push(getRandomElement(commentsMocks));
     }
@@ -63,41 +66,41 @@ var generateMocks = function () {
 
 var mockingData = generateMocks();
 
-var templateUserPicture = document.querySelector(CLASS_TEMPLATE_PICTURE).content.querySelector(CLASS_PICTURE);
+var templateUserPicture = document.querySelector(ID_TEMPLATE_PICTURE).content.querySelector('.' + Selectors.PICTURE);
 
-var picturesList = document.querySelector(CLASS_PICTURES_LIST);
+var picturesList = document.querySelector('.' + Selectors.PICTURES_LIST);
 
 for (var i = 0; i < mockingData.length; i++) {
   var cloneTemplateUserPicture = templateUserPicture.cloneNode(true);
   picturesList.appendChild(cloneTemplateUserPicture);
-  cloneTemplateUserPicture.querySelector(CLASS_PICT_IMG).src = mockingData[i].url;
-  cloneTemplateUserPicture.querySelector(CLASS_PICT_COMMENTS).textContent = String(mockingData[i].comments.length);
-  cloneTemplateUserPicture.querySelector(CLASS_PICT_LIKES).textContent = mockingData[i].likes;
+  cloneTemplateUserPicture.querySelector('.' + Selectors.PICT_IMG).src = mockingData[i].url;
+  cloneTemplateUserPicture.querySelector('.' + Selectors.PICT_COMMENTS).textContent = String(mockingData[i].comments.length);
+  cloneTemplateUserPicture.querySelector('.' + Selectors.PICT_LIKES).textContent = mockingData[i].likes;
 }
 
 var getBigPicture = function (numberPicture) {
-  var bigPicture = document.querySelector(CLASS_BIG_PICTURE);
-  bigPicture.classList.remove(CLASS_HIDDEN);
-  bigPicture.querySelector(CLASS_URL_BIG_PICTURE).src = mockingData[numberPicture].url;
-  bigPicture.querySelector(CLASS_LIKES_COUNT).textContent = mockingData[numberPicture].likes;
-  bigPicture.querySelector(CLASS_SOCIAL_CAPTION).textContent = DESCRIPTION;
-  var templateComment = bigPicture.querySelector(CLASS_TEMPLATE_SOCIAL_COMMENT);
-  var bigPictureCommentList = bigPicture.querySelector(CLASS_COMMENTS_LIST);
+  var bigPicture = document.querySelector('.' + Selectors.BIG_PICTURE);
+  bigPicture.classList.remove(Selectors.HIDDEN);
+  bigPicture.querySelector('.' + Selectors.URL_BIG_PICTURE).src = mockingData[numberPicture].url;
+  bigPicture.querySelector('.' + Selectors.LIKES_COUNT).textContent = mockingData[numberPicture].likes;
+  bigPicture.querySelector('.' + Selectors.SOCIAL_CAPTION).textContent = DESCRIPTION;
+  var templateComment = bigPicture.querySelector('.' + Selectors.TEMPLATE_SOCIAL_COMMENT);
+  var bigPictureCommentList = bigPicture.querySelector('.' + Selectors.COMMENTS_LIST);
   bigPictureCommentList.innerHTML = '';
   var cloneTemplateComment = null;
-  if (mockingData[numberPicture].comments.length > maxCountCommentsInPage) {
-    for (i = 0; i < maxCountCommentsInPage; i++) {
+  if (mockingData[numberPicture].comments.length > MAX_COUNT_COMMENTS_IN_PAGE) {
+    for (i = 0; i < MAX_COUNT_COMMENTS_IN_PAGE; i++) {
       cloneTemplateComment = templateComment.cloneNode(true);
       bigPictureCommentList.appendChild(cloneTemplateComment);
-      cloneTemplateComment.querySelector(CLASS_SOCIAL_PICTURE).src = 'img/avatar-' + (Math.floor(Math.random() * 6) + 1) + '.svg';
-      cloneTemplateComment.querySelector(CLASS_SOCIAL_TEXT).textContent = mockingData[numberPicture].comments[i];
+      cloneTemplateComment.querySelector('.' + Selectors.SOCIAL_PICTURE).src = 'img/avatar-' + (Math.floor(Math.random() * 6) + 1) + '.svg';
+      cloneTemplateComment.querySelector('.' + Selectors.SOCIAL_TEXT).textContent = mockingData[numberPicture].comments[i];
     }
   } else {
     for (i = 0; i < mockingData[numberPicture].comments.length; i++) {
       cloneTemplateComment = templateComment.cloneNode(true);
       bigPictureCommentList.appendChild(cloneTemplateComment);
-      cloneTemplateComment.querySelector(CLASS_SOCIAL_PICTURE).src = 'img/avatar-' + (Math.floor(Math.random() * 6) + 1) + '.svg';
-      cloneTemplateComment.querySelector(CLASS_SOCIAL_TEXT).textContent = mockingData[numberPicture].comments[i];
+      cloneTemplateComment.querySelector('.' + Selectors.SOCIAL_PICTURE).src = 'img/avatar-' + (Math.floor(Math.random() * 6) + 1) + '.svg';
+      cloneTemplateComment.querySelector('.' + Selectors.SOCIAL_TEXT).textContent = mockingData[numberPicture].comments[i];
     }
   }
 };
@@ -105,4 +108,4 @@ var getBigPicture = function (numberPicture) {
 document.querySelector('.social__comment-count').classList.add('visually-hidden');
 document.querySelector('.comments-loader').classList.add('visually-hidden');
 
-getBigPicture(Math.floor(Math.random() * countPictures));
+getBigPicture(Math.floor(Math.random() * COUNT_PICTURES));
