@@ -11,7 +11,6 @@ var MAX_COUNT_COMMENTS_IN_PAGE = 5;
 var TERM_FOR_MAX_VALUE = 1;
 var DESCRIPTION = 'Описание фотографии';
 var PROPORTION_FACTOR = 100;
-var TAG_NAME_FOR_DELEGATION_FILTER = 'SPAN';
 
 var Identifiers = {
   TEMPLATE_PICTURE: '#picture',
@@ -25,7 +24,7 @@ var ClassNames = {
 
 var Filtres = {
   CHROME: {
-    className: 'effects__preview--chrome',
+    className: '.effects__preview--chrome',
     minValueFilter: 0,
     maxValueFilter: 1,
     cssFilter: function (valueSliderPin) {
@@ -34,7 +33,7 @@ var Filtres = {
     }
   },
   SEPIA: {
-    className: 'effects__preview--sepia',
+    className: '.effects__preview--sepia',
     minValueFilter: 0,
     maxValueFilter: 1,
     cssFilter: function (valueSliderPin) {
@@ -43,7 +42,7 @@ var Filtres = {
     }
   },
   MARVIN: {
-    className: 'effects__preview--marvin',
+    className: '.effects__preview--marvin',
     minValueFilter: 0,
     maxValueFilter: 100,
     cssFilter: function (valueSliderPin) {
@@ -55,7 +54,7 @@ var Filtres = {
     }
   },
   PHOBOS: {
-    className: 'effects__preview--phobos',
+    className: '.effects__preview--phobos',
     minValueFilter: 0,
     maxValueFilter: 3,
     cssFilter: function (valueSliderPin) {
@@ -67,7 +66,7 @@ var Filtres = {
     }
   },
   HEAT: {
-    className: 'effects__preview--heat',
+    className: '.effects__preview--heat',
     minValueFilter: 1,
     maxValueFilter: 3,
     cssFilter: function (valueSliderPin) {
@@ -75,7 +74,7 @@ var Filtres = {
       return 'brightness(' + valueCssFilter + ')';
     }
   }
-};
+}
 
 var Keydown = {
   ENTER: 13,
@@ -105,8 +104,13 @@ var Selectors = {
   EFFECT_LEVEL_VALUE: '.effect-level__value',
   SLIDER_PIN: '.effect-level__pin',
   SLIDER_LINE: '.effect-level__line',
-  FILTER_LIST: '.effects__list',
-  UPLOAD_IMG: '.img-upload__preview img',
+  FILTER_BUTTON_EFFECT_NONE: 'label[for=effect-none]',
+  FILTER_BUTTON_EFFECT_CHROME: 'label[for=effect-chrome]',
+  FILTER_BUTTON_EFFECT_SEPIA: 'label[for=effect-sepia]',
+  FILTER_BUTTON_EFFECT_MARVIN: 'label[for=effect-marvin]',
+  FILTER_BUTTON_EFFECT_PHOBOS: 'label[for=effect-phobos]',
+  FILTER_BUTTON_EFFECT_HEAT: 'label[for=effect-heat]',
+  UPLOAD_IMG: '.img-upload__preview ',
 };
 
 var commentsMocks = ['Всё отлично!', 'В целом всё неплохо. Но не всё.',
@@ -159,7 +163,13 @@ var formChangeUploadFileExit = document.querySelector(Selectors.IMG_UPLOAD_EXIT)
 var pinSlider = formChangeUploadFile.querySelector(Selectors.SLIDER_PIN);
 var filterSliderBar = formChangeUploadFile.querySelector(Selectors.SLIDER_LINE);
 var filterInputLevelValue = formChangeUploadFile.querySelector(Selectors.EFFECT_LEVEL_VALUE);
-var filterList = formChangeUploadFile.querySelector(Selectors.FILTER_LIST);
+var filterEffectButtons = formChangeUploadFile.querySelector(Selectors.FILTER_BUTTON_EFFECT_NONE);
+var filterButtonEffectNone = formChangeUploadFile.querySelector(Selectors.FILTER_BUTTON_EFFECT_NONE);
+var filterButtonEffectChrome = formChangeUploadFile.querySelector(Selectors.FILTER_BUTTON_EFFECT_CHROME);
+var filterButtonEffectSepia = formChangeUploadFile.querySelector(Selectors.FILTER_BUTTON_EFFECT_SEPIA);
+var filterButtonEffectMarvin = formChangeUploadFile.querySelector(Selectors.FILTER_BUTTON_EFFECT_MARVIN);
+var filterButtonEffectPhobos = formChangeUploadFile.querySelector(Selectors.FILTER_BUTTON_EFFECT_PHOBOS);
+var filterButtonEffectHeat = formChangeUploadFile.querySelector(Selectors.FILTER_BUTTON_EFFECT_PHOBOS);
 var uploadImgPreview = formChangeUploadFile.querySelector(Selectors.UPLOAD_IMG);
 
 var getBigPicture = function (numberPicture) {
@@ -187,13 +197,13 @@ var getBigPicture = function (numberPicture) {
 };
 
 var onOpenBigPhoto = function (i) {
-  cloneTemplateUserPicture.addEventListener('click', function (evt) {
+  cloneTemplateUserPicture.addEventListener('click', function (evt){
     evt.preventDefault();
     getBigPicture(i);
   });
 };
 
-var onCloneTemplateUserPictureClick = function () {
+var onCloneTemplateUserPictureClick = function() {
   bigPicture.classList.remove(ClassNames.HIDDEN);
   pageBody.classList.add(ClassNames.BODY_WHEN_BIG_PICTURE_OPEN);
   buttonExitBigPhoto.addEventListener('click', onCloseBigPhoto);
@@ -230,51 +240,16 @@ for (var i = 0; i < mockingData.length; i++) {
   onOpenBigPhoto(i);
 }
 
-var onChangeFilter = function (evt) {
-  if (evt.target.tagName === TAG_NAME_FOR_DELEGATION_FILTER) {
-    if (evt.target.classList[1] === Filtres.CHROME.className) {
-      uploadImgPreview.style.filter = Filtres.CHROME.cssFilter(filterInputLevelValue.value);
-      return uploadImgPreview;
-    }
-    if (evt.target.classList[1] === Filtres.SEPIA.className) {
-      uploadImgPreview.style.filter = Filtres.SEPIA.cssFilter(filterInputLevelValue.value);
-      return uploadImgPreview;
-    }
-    if (evt.target.classList[1] === Filtres.MARVIN.className) {
-      uploadImgPreview.style.filter = Filtres.MARVIN.cssFilter(filterInputLevelValue.value);
-      return uploadImgPreview;
-    }
-    if (evt.target.classList[1] === Filtres.PHOBOS.className) {
-      uploadImgPreview.style.filter = Filtres.PHOBOS.cssFilter(filterInputLevelValue.value);
-      return uploadImgPreview;
-    }
-    if (evt.target.classList[1] === Filtres.HEAT.className) {
-      uploadImgPreview.style.filter = Filtres.HEAT.cssFilter(filterInputLevelValue.value);
-      return uploadImgPreview;
-    }
-  }
-  return uploadImgPreview;
-};
-
-var onChangeFilterPressEnter = function (evt) {
-  if (evt.keyCode === Keydown.ENTER) {
-    onChangeFilter(evt);
-  }
-};
-
-
-var onPinSliderMouseup = function () {
-  filterInputLevelValue.value = pinSlider.offsetLeft * PROPORTION_FACTOR / filterSliderBar.clientWidth;
-};
-
 var onOpenFormUploadFile = function () {
   formChangeUploadFile.classList.remove(ClassNames.HIDDEN);
   formChangeUploadFileExit.addEventListener('click', onCloseFormUploadFile);
   formChangeUploadFileExit.addEventListener('keydown', onCloseFormUploadFilePressEnter);
   document.addEventListener('keydown', onCloseFormUploadFilePressEsc);
   pinSlider.addEventListener('mouseup', onPinSliderMouseup);
-  filterList.addEventListener('click', onChangeFilter);
-  filterList.addEventListener('keydown', onChangeFilterPressEnter);
+};
+
+var onPinSliderMouseup = function () {
+  filterInputLevelValue.value = pinSlider.offsetLeft * PROPORTION_FACTOR / filterSliderBar.clientWidth;
 };
 
 var onCloseFormUploadFile = function () {
@@ -284,8 +259,6 @@ var onCloseFormUploadFile = function () {
   document.removeEventListener('keydown', onCloseFormUploadFilePressEsc);
   formUploadFile.value = null;
   pinSlider.removeEventListener('mouseup', onPinSliderMouseup);
-  filterList.removeEventListener('click', onChangeFilter);
-  filterList.removeEventListener('keydown', onChangeFilterPressEnter);
 };
 
 var onCloseFormUploadFilePressEsc = function (evt) {
