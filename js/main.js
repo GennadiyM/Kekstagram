@@ -83,6 +83,9 @@ var Filters = {
     cssFilter: function (valueScale) {
       return 'scale(' + valueScale / PROPORTION_FACTOR + ')';
     }
+  },
+  NONE: {
+    hideSlider: true
   }
 };
 
@@ -211,6 +214,15 @@ var onOpenBigPhoto = function (i) {
   });
 };
 
+for (var i = 0; i < mockingData.length; i++) {
+  var cloneTemplateUserPicture = templateUserPicture.cloneNode(true);
+  picturesList.appendChild(cloneTemplateUserPicture);
+  cloneTemplateUserPicture.querySelector(Selectors.PICT_IMG).src = mockingData[i].url;
+  cloneTemplateUserPicture.querySelector(Selectors.PICT_COMMENTS).textContent = String(mockingData[i].comments.length);
+  cloneTemplateUserPicture.querySelector(Selectors.PICT_LIKES).textContent = mockingData[i].likes;
+  onOpenBigPhoto(i);
+}
+
 var onCloneTemplateUserPictureClick = function () {
   bigPicture.classList.remove(ClassNames.HIDDEN);
   pageBody.classList.add(ClassNames.BODY_WHEN_BIG_PICTURE_OPEN);
@@ -233,6 +245,12 @@ var onCloseBigPhotoPressEsc = function (evt) {
   }
 };
 
+var removeClassHidden = function () {
+  if (slider.classList.contains(ClassNames.HIDDEN)) {
+    slider.classList.remove(ClassNames.HIDDEN);
+  }
+}
+
 var getNumberTypeValue = function (str) {
   var stringToArray =  str.split('');
   var arrayToString = '';
@@ -243,46 +261,27 @@ var getNumberTypeValue = function (str) {
   return parseInt(arrayToString);
 };
 
-var changeScaleBigger = function () {
+var onChangeScaleBigger = function () {
   if ((getNumberTypeValue(scaleControlValue.value) + STEP_SCALE) < Filters.SCALE.maxValueFilter) {
     var value = getNumberTypeValue(scaleControlValue.value) + STEP_SCALE;
-    scaleControlValue.value = value + '%';
+  } else {
+    value = Filters.SCALE.maxValueFilter;
   }
+  scaleControlValue.value = value + '%';
   return uploadImgPreview.style.transform = Filters.SCALE.cssFilter(getNumberTypeValue(scaleControlValue.value));
 };
 
-var changeScaleSmaller = function () {
-  if ((getNumberTypeValue(scaleControlValue.value) - STEP_SCALE) > Filters.SCALE.minValueFilter) {
+var onChangeScaleSmaller = function () {
+  if ((getNumberTypeValue(scaleControlValue.value) - STEP_SCALE) >= Filters.SCALE.minValueFilter) {
     var value = getNumberTypeValue(scaleControlValue.value) - STEP_SCALE;
     scaleControlValue.value = value + '%';
   }
   return uploadImgPreview.style.transform = Filters.SCALE.cssFilter(getNumberTypeValue(scaleControlValue.value));
 };
 
-var onCloseBigPhotoPressEnter = function (evt) {
-  if (evt.keyCode === Keydown.ENTER) {
-    onCloseBigPhoto();
-  }
-};
-
-for (var i = 0; i < mockingData.length; i++) {
-  var cloneTemplateUserPicture = templateUserPicture.cloneNode(true);
-  picturesList.appendChild(cloneTemplateUserPicture);
-  cloneTemplateUserPicture.querySelector(Selectors.PICT_IMG).src = mockingData[i].url;
-  cloneTemplateUserPicture.querySelector(Selectors.PICT_COMMENTS).textContent = String(mockingData[i].comments.length);
-  cloneTemplateUserPicture.querySelector(Selectors.PICT_LIKES).textContent = mockingData[i].likes;
-  onOpenBigPhoto(i);
-}
-
-var removeClassHidden = function () {
-  if (slider.classList.contains(ClassNames.HIDDEN)) {
-    slider.classList.remove(ClassNames.HIDDEN);
-  }
-}
-
 var onChangeFilter = function (evt) {
   if (evt.target.tagName === TAG_NAME_FOR_DELEGATION_FILTER) {
-    if (evt.target.classList.contains(ClassNames.NONE_EFFECTS)) {
+    if (Filters[evt.target.id.toUpperCase()].hideSlider) {
       slider.classList.add(ClassNames.HIDDEN);
       return uploadImgPreview;
     }
@@ -311,8 +310,8 @@ var onOpenFormUploadFile = function () {
   pinSlider.addEventListener('mouseup', onPinSliderMouseup);
   filterList.addEventListener('click', onChangeFilter);
   filterList.addEventListener('keydown', onChangeFilterPressEnter);
-  scaleControlBigger.addEventListener('click', changeScaleBigger);
-  scaleControlSmaller.addEventListener('click', changeScaleSmaller);
+  scaleControlBigger.addEventListener('click', onChangeScaleBigger);
+  scaleControlSmaller.addEventListener('click', onChangeScaleSmaller);
 };
 
 var onCloseFormUploadFile = function () {
@@ -324,8 +323,8 @@ var onCloseFormUploadFile = function () {
   pinSlider.removeEventListener('mouseup', onPinSliderMouseup);
   filterList.removeEventListener('click', onChangeFilter);
   filterList.removeEventListener('keydown', onChangeFilterPressEnter);
-  scaleControlBigger.removeEventListener('click', changeScaleBigger);
-  scaleControlSmaller.removeEventListener('click', changeScaleSmaller);
+  scaleControlBigger.removeEventListener('click', onChangeScaleBigger);
+  scaleControlSmaller.removeEventListener('click', onChangeScaleSmaller);
 };
 
 var onCloseFormUploadFilePressEsc = function (evt) {
