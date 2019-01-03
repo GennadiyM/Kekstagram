@@ -12,6 +12,7 @@ var TERM_FOR_MAX_VALUE = 1;
 var DESCRIPTION = 'Описание фотографии';
 var PROPORTION_FACTOR = 100;
 var TAG_NAME_FOR_DELEGATION_FILTER = 'SPAN';
+var STEP_SCALE = 25;
 
 var Identifiers = {
   TEMPLATE_PICTURE: '#picture',
@@ -21,9 +22,10 @@ var Identifiers = {
 var ClassNames = {
   HIDDEN: 'hidden',
   BODY_WHEN_BIG_PICTURE_OPEN: 'modal-open',
+  NONE_EFFECTS: 'effects__preview--none',
 };
 
-var Filtres = {
+var Filters = {
   CHROME: {
     className: 'effects__preview--chrome',
     minValueFilter: 0,
@@ -74,6 +76,13 @@ var Filtres = {
       var valueCssFilter = (this.maxValueFilter - this.minValueFilter) / PROPORTION_FACTOR * valueSliderPin + this.minValueFilter;
       return 'brightness(' + valueCssFilter + ')';
     }
+  },
+  SCALE: {
+    minValueFilter: 25,
+    maxValueFilter: 100,
+    cssFilter: function (valueScale) {
+      return 'scale(' + valueScale / PROPORTION_FACTOR + ')';
+    }
   }
 };
 
@@ -107,6 +116,11 @@ var Selectors = {
   SLIDER_LINE: '.effect-level__line',
   FILTER_LIST: '.effects__list',
   UPLOAD_IMG: '.img-upload__preview img',
+  SLIDER: '.img-upload__effect-level',
+  SCALE_SMALLER: '.scale__control--smaller',
+  SCALE_VALUE: '.scale__control--value',
+  SCALE_BIGGER: '.scale__control--bigger'
+
 };
 
 var commentsMocks = ['Всё отлично!', 'В целом всё неплохо. Но не всё.',
@@ -156,11 +170,15 @@ var buttonExitBigPhoto = bigPicture.querySelector(Selectors.BIG_PICTURE_EXIT);
 var formUploadFile = document.querySelector(Identifiers.FORM_UPLOAD_FILE);
 var formChangeUploadFile = document.querySelector(Selectors.IMG_UPLOAD_OVERLAY);
 var formChangeUploadFileExit = document.querySelector(Selectors.IMG_UPLOAD_EXIT);
+var slider = formChangeUploadFile.querySelector(Selectors.SLIDER);
 var pinSlider = formChangeUploadFile.querySelector(Selectors.SLIDER_PIN);
 var filterSliderBar = formChangeUploadFile.querySelector(Selectors.SLIDER_LINE);
 var filterInputLevelValue = formChangeUploadFile.querySelector(Selectors.EFFECT_LEVEL_VALUE);
 var filterList = formChangeUploadFile.querySelector(Selectors.FILTER_LIST);
 var uploadImgPreview = formChangeUploadFile.querySelector(Selectors.UPLOAD_IMG);
+var scaleControlSmaller = formChangeUploadFile.querySelector(Selectors.SCALE_SMALLER);
+var scaleControlValue = formChangeUploadFile.querySelector(Selectors.SCALE_VALUE);
+var scaleControlBigger = formChangeUploadFile.querySelector(Selectors.SCALE_BIGGER);
 
 var getBigPicture = function (numberPicture) {
   onCloneTemplateUserPictureClick();
@@ -215,6 +233,32 @@ var onCloseBigPhotoPressEsc = function (evt) {
   }
 };
 
+var getNumberTypeValue = function (str) {
+  var stringToArray =  str.split('');
+  var arrayToString = '';
+  stringToArray.pop();
+  for (var i = 0; i < stringToArray.length; i++) {
+    arrayToString += stringToArray[i];
+  }
+  return parseInt(arrayToString);
+};
+
+var changeScaleBigger = function () {
+  if ((getNumberTypeValue(scaleControlValue.value) + STEP_SCALE) < Filters.SCALE.maxValueFilter) {
+    var value = getNumberTypeValue(scaleControlValue.value) + STEP_SCALE;
+    scaleControlValue.value = value + '%';
+  }
+  return uploadImgPreview.style.transform = Filters.SCALE.cssFilter(getNumberTypeValue(scaleControlValue.value));
+};
+
+var changeScaleSmaller = function () {
+  if ((getNumberTypeValue(scaleControlValue.value) - STEP_SCALE) > Filters.SCALE.minValueFilter) {
+    var value = getNumberTypeValue(scaleControlValue.value) - STEP_SCALE;
+    scaleControlValue.value = value + '%';
+  }
+  return uploadImgPreview.style.transform = Filters.SCALE.cssFilter(getNumberTypeValue(scaleControlValue.value));
+};
+
 var onCloseBigPhotoPressEnter = function (evt) {
   if (evt.keyCode === Keydown.ENTER) {
     onCloseBigPhoto();
@@ -230,28 +274,21 @@ for (var i = 0; i < mockingData.length; i++) {
   onOpenBigPhoto(i);
 }
 
+var removeClassHidden = function () {
+  if (slider.classList.contains(ClassNames.HIDDEN)) {
+    slider.classList.remove(ClassNames.HIDDEN);
+  }
+}
+
 var onChangeFilter = function (evt) {
   if (evt.target.tagName === TAG_NAME_FOR_DELEGATION_FILTER) {
-    if (evt.target.classList[1] === Filtres.CHROME.className) {
-      uploadImgPreview.style.filter = Filtres.CHROME.cssFilter(filterInputLevelValue.value);
+    if (evt.target.classList.contains(ClassNames.NONE_EFFECTS)) {
+      slider.classList.add(ClassNames.HIDDEN);
       return uploadImgPreview;
     }
-    if (evt.target.classList[1] === Filtres.SEPIA.className) {
-      uploadImgPreview.style.filter = Filtres.SEPIA.cssFilter(filterInputLevelValue.value);
-      return uploadImgPreview;
-    }
-    if (evt.target.classList[1] === Filtres.MARVIN.className) {
-      uploadImgPreview.style.filter = Filtres.MARVIN.cssFilter(filterInputLevelValue.value);
-      return uploadImgPreview;
-    }
-    if (evt.target.classList[1] === Filtres.PHOBOS.className) {
-      uploadImgPreview.style.filter = Filtres.PHOBOS.cssFilter(filterInputLevelValue.value);
-      return uploadImgPreview;
-    }
-    if (evt.target.classList[1] === Filtres.HEAT.className) {
-      uploadImgPreview.style.filter = Filtres.HEAT.cssFilter(filterInputLevelValue.value);
-      return uploadImgPreview;
-    }
+    removeClassHidden();
+    uploadImgPreview.style.filter = Filters[evt.target.id.toUpperCase()].cssFilter(filterInputLevelValue.value);
+    return uploadImgPreview;
   }
   return uploadImgPreview;
 };
@@ -261,7 +298,6 @@ var onChangeFilterPressEnter = function (evt) {
     onChangeFilter(evt);
   }
 };
-
 
 var onPinSliderMouseup = function () {
   filterInputLevelValue.value = pinSlider.offsetLeft * PROPORTION_FACTOR / filterSliderBar.clientWidth;
@@ -275,6 +311,8 @@ var onOpenFormUploadFile = function () {
   pinSlider.addEventListener('mouseup', onPinSliderMouseup);
   filterList.addEventListener('click', onChangeFilter);
   filterList.addEventListener('keydown', onChangeFilterPressEnter);
+  scaleControlBigger.addEventListener('click', changeScaleBigger);
+  scaleControlSmaller.addEventListener('click', changeScaleSmaller);
 };
 
 var onCloseFormUploadFile = function () {
@@ -286,6 +324,8 @@ var onCloseFormUploadFile = function () {
   pinSlider.removeEventListener('mouseup', onPinSliderMouseup);
   filterList.removeEventListener('click', onChangeFilter);
   filterList.removeEventListener('keydown', onChangeFilterPressEnter);
+  scaleControlBigger.removeEventListener('click', changeScaleBigger);
+  scaleControlSmaller.removeEventListener('click', changeScaleSmaller);
 };
 
 var onCloseFormUploadFilePressEsc = function (evt) {
