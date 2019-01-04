@@ -245,48 +245,57 @@ var onCloseBigPhotoPressEsc = function (evt) {
   }
 };
 
+var onCloseBigPhotoPressEnter = function (evt) {
+  if (evt.keyCode === Keydown.ENTER) {
+    onCloseBigPhoto();
+  }
+};
+
 var removeClassHidden = function () {
   if (slider.classList.contains(ClassNames.HIDDEN)) {
     slider.classList.remove(ClassNames.HIDDEN);
   }
-}
+};
 
 var getNumberTypeValue = function (str) {
-  var stringToArray =  str.split('');
+  var stringToArray = str.split('');
   var arrayToString = '';
   stringToArray.pop();
-  for (var i = 0; i < stringToArray.length; i++) {
+  for (i = 0; i < stringToArray.length; i++) {
     arrayToString += stringToArray[i];
   }
-  return parseInt(arrayToString);
+  return +arrayToString;
 };
 
 var onChangeScaleBigger = function () {
-  if ((getNumberTypeValue(scaleControlValue.value) + STEP_SCALE) < Filters.SCALE.maxValueFilter) {
-    var value = getNumberTypeValue(scaleControlValue.value) + STEP_SCALE;
-  } else {
-    value = Filters.SCALE.maxValueFilter;
+  var modifiedValueScale = getNumberTypeValue(scaleControlValue.value) + STEP_SCALE;
+  if (Math.max(Filters.SCALE.maxValueFilter, modifiedValueScale) > Filters.SCALE.maxValueFilter) {
+    modifiedValueScale = Filters.SCALE.maxValueFilter;
   }
-  scaleControlValue.value = value + '%';
-  return uploadImgPreview.style.transform = Filters.SCALE.cssFilter(getNumberTypeValue(scaleControlValue.value));
+  scaleControlValue.value = modifiedValueScale + '%';
+  uploadImgPreview.style.transform = Filters.SCALE.cssFilter(getNumberTypeValue(scaleControlValue.value));
+  return uploadImgPreview;
 };
 
 var onChangeScaleSmaller = function () {
-  if ((getNumberTypeValue(scaleControlValue.value) - STEP_SCALE) >= Filters.SCALE.minValueFilter) {
-    var value = getNumberTypeValue(scaleControlValue.value) - STEP_SCALE;
-    scaleControlValue.value = value + '%';
+  var modifiedValueScale = getNumberTypeValue(scaleControlValue.value) - STEP_SCALE;
+  if (Math.min(Filters.SCALE.minValueFilter, modifiedValueScale) < Filters.SCALE.minValueFilter) {
+    modifiedValueScale = Filters.SCALE.minValueFilter;
   }
-  return uploadImgPreview.style.transform = Filters.SCALE.cssFilter(getNumberTypeValue(scaleControlValue.value));
+  scaleControlValue.value = modifiedValueScale + '%';
+  uploadImgPreview.style.transform = Filters.SCALE.cssFilter(getNumberTypeValue(scaleControlValue.value));
+  return uploadImgPreview;
 };
 
 var onChangeFilter = function (evt) {
   if (evt.target.tagName === TAG_NAME_FOR_DELEGATION_FILTER) {
-    if (Filters[evt.target.id.toUpperCase()].hideSlider) {
+    var currentFilter = evt.target.id.toUpperCase();
+    if (Filters[currentFilter].hideSlider) {
       slider.classList.add(ClassNames.HIDDEN);
       return uploadImgPreview;
     }
     removeClassHidden();
-    uploadImgPreview.style.filter = Filters[evt.target.id.toUpperCase()].cssFilter(filterInputLevelValue.value);
+    uploadImgPreview.style.filter = Filters[currentFilter].cssFilter(filterInputLevelValue.value);
     return uploadImgPreview;
   }
   return uploadImgPreview;
