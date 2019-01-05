@@ -24,7 +24,7 @@ var HASHTAGS_ID = 'hashtags';
 var ErrorMessage = {
   START_ERROR: 'Хэш-тег должен начинаться с символа # (решётка)!',
   CONTENT_ERROR: 'Хеш-тег не может состоять только из одной решётки!',
-  QUANTITY_ERROR: 'Количество хэш-тегов не может превышать ' + MAX_HASHTAGS_COUNT + ' !',
+  QUANTITY_ERROR: 'Количество хэш-тегов не может превышать ' + MAX_HASHTAGS_COUNT + '!',
   REPETITION_ERROR: 'Хеш-теги не могут быть одинаковым!',
   LENGTH_ERROR: 'Длин хэш-тега не может превышать ' + HASHTAG_MAX_LENGTH + ' символов!',
   COMMENT_ERROR: 'Длина комментария не может превышать ' + COMMENT_MAX_LENGTH + ' символов!',
