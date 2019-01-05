@@ -24,13 +24,12 @@ var HASHTAGS_ID = 'hashtags';
 var ErrorMessage = {
   START_ERROR: 'Хэш-тег должен начинаться с символа # (решётка)!',
   CONTENT_ERROR: 'Хеш-тег не может состоять только из одной решётки!',
-  CONTENT_ERROR: 'Хеш-тег не может состоять только из одной решётки!',
   QUANTITY_ERROR: 'Количество хэш-тегов не может превышать ' + MAX_HASHTAGS_COUNT + ' !',
   REPETITION_ERROR: 'Хеш-теги не могут быть одинаковым!',
   LENGTH_ERROR: 'Длин хэш-тега не может превышать ' + HASHTAG_MAX_LENGTH + ' символов!',
   COMMENT_ERROR: 'Длина комментария не может превышать ' + COMMENT_MAX_LENGTH + ' символов!',
   NO_ERROR: ''
-}
+};
 
 var Identifiers = {
   TEMPLATE_PICTURE: '#picture',
@@ -335,34 +334,35 @@ var onPinSliderMouseup = function () {
 var checkHashtags = function (hashtagsToArray) {
   if (hashtagsToArray.length > 0) {
     if (hashtagsToArray.length > MAX_HASHTAGS_COUNT) {
-      return 'QUANTITY_ERROR';
+      return ErrorMessage.QUANTITY_ERROR;
     }
     for (i = 0; i < hashtagsToArray.length; i++) {
       var hashtag = hashtagsToArray[i];
       for (var j = i + 1; j < hashtagsToArray.length; j++) {
+        if (!hashtagsToArray[i].startsWith(HASHTAG_FIRST_SYMBOL)) {
+          return ErrorMessage.START_ERROR;
+        }
         if (hashtag === hashtagsToArray[j]) {
-          return 'REPETITION_ERROR';
+          return ErrorMessage.REPETITION_ERROR;
         }
       }
-      if (hashtagsToArray[i].length === 1 && hashtagsToArray[i][0] === HASHTAG_FIRST_SYMBOL) {
-        return 'CONTENT_ERROR';
-      }
-      if (hashtagsToArray[i][0] !== HASHTAG_FIRST_SYMBOL) {
-        return 'START_ERROR';
+
+      if (hashtagsToArray[i].length === HASHTAG_MIN_LENGTH && hashtagsToArray[i][0] === HASHTAG_FIRST_SYMBOL) {
+        return ErrorMessage.CONTENT_ERROR;
       }
       if (hashtagsToArray[i].length > HASHTAG_MAX_LENGTH) {
-        return 'LENGTH_ERROR';
+        return ErrorMessage.LENGTH_ERROR;
       }
     }
-    return 'NO_ERROR';
+    return ErrorMessage.NO_ERROR;
   }
-  return 'NO_ERROR';
+  return ErrorMessage.NO_ERROR;
 };
 
 var onHashtagValidation = function (evt) {
   evt.preventDefault();
-  var hashtagsToArray = evt.target.value.toLowerCase().split(' ');
-  inputHashtags.setCustomValidity(ErrorMessage[checkHashtags(hashtagsToArray)]);
+  var hashtagsToArray = evt.target.value.toLowerCase().split(/\s+/);
+  inputHashtags.setCustomValidity(checkHashtags(hashtagsToArray));
 };
 
 var onCommentValidation = function (evt) {
