@@ -13,6 +13,24 @@ var DESCRIPTION = 'Описание фотографии';
 var PROPORTION_FACTOR = 100;
 var TAG_NAME_FOR_DELEGATION_FILTER = 'SPAN';
 var STEP_SCALE = 25;
+var MAX_HASHTAGS_COUNT = 5;
+var COMMENT_MAX_LENGTH = 140;
+var HASHTAG_MAX_LENGTH = 20;
+var HASHTAG_MIN_LENGTH = 1;
+var HASHTAG_FIRST_SYMBOL = '#';
+var COMMENTS_ID = 'comments';
+var HASHTAGS_ID = 'hashtags';
+
+var ErrorMessage = {
+  START_ERROR: 'Хэш-тег должен начинаться с символа # (решётка)!',
+  CONTENT_ERROR: 'Хеш-тег не может состоять только из одной решётки!',
+  CONTENT_ERROR: 'Хеш-тег не может состоять только из одной решётки!',
+  QUANTITY_ERROR: 'Количество хэш-тегов не может превышать ' + MAX_HASHTAGS_COUNT + ' !',
+  REPETITION_ERROR: 'Хеш-теги не могут быть одинаковым!',
+  LENGTH_ERROR: 'Длин хэш-тега не может превышать ' + HASHTAG_MAX_LENGTH + ' символов!',
+  COMMENT_ERROR: 'Длина комментария не может превышать ' + COMMENT_MAX_LENGTH + ' символов!',
+  NO_ERROR: ''
+}
 
 var Identifiers = {
   TEMPLATE_PICTURE: '#picture',
@@ -122,8 +140,9 @@ var Selectors = {
   SLIDER: '.img-upload__effect-level',
   SCALE_SMALLER: '.scale__control--smaller',
   SCALE_VALUE: '.scale__control--value',
-  SCALE_BIGGER: '.scale__control--bigger'
-
+  SCALE_BIGGER: '.scale__control--bigger',
+  INPUT_HASHTAGS: '.text__hashtags',
+  INPUT_COMMENTS: '.text__description'
 };
 
 var commentsMocks = ['Всё отлично!', 'В целом всё неплохо. Но не всё.',
@@ -182,6 +201,8 @@ var uploadImgPreview = formChangeUploadFile.querySelector(Selectors.UPLOAD_IMG);
 var scaleControlSmaller = formChangeUploadFile.querySelector(Selectors.SCALE_SMALLER);
 var scaleControlValue = formChangeUploadFile.querySelector(Selectors.SCALE_VALUE);
 var scaleControlBigger = formChangeUploadFile.querySelector(Selectors.SCALE_BIGGER);
+var inputHashtags = formChangeUploadFile.querySelector(Selectors.INPUT_HASHTAGS);
+var inputComments = formChangeUploadFile.querySelector(Selectors.INPUT_COMMENTS);
 
 var getBigPicture = function (numberPicture) {
   onCloneTemplateUserPictureClick();
@@ -311,6 +332,48 @@ var onPinSliderMouseup = function () {
   filterInputLevelValue.value = pinSlider.offsetLeft * PROPORTION_FACTOR / filterSliderBar.clientWidth;
 };
 
+var checkHashtags = function (hashtagsToArray) {
+  if (hashtagsToArray.length > 0) {
+    if (hashtagsToArray.length > MAX_HASHTAGS_COUNT) {
+      return 'QUANTITY_ERROR';
+    }
+    for (i = 0; i < hashtagsToArray.length; i++) {
+      var hashtag = hashtagsToArray[i];
+      for (var j = i + 1; j < hashtagsToArray.length; j++) {
+        if (hashtag === hashtagsToArray[j]) {
+          return 'REPETITION_ERROR';
+        }
+      }
+      if (hashtagsToArray[i].length === 1 && hashtagsToArray[i][0] === HASHTAG_FIRST_SYMBOL) {
+        return 'CONTENT_ERROR';
+      }
+      if (hashtagsToArray[i][0] !== HASHTAG_FIRST_SYMBOL) {
+        return 'START_ERROR';
+      }
+      if (hashtagsToArray[i].length > HASHTAG_MAX_LENGTH) {
+        return 'LENGTH_ERROR';
+      }
+    }
+    return 'NO_ERROR';
+  }
+  return 'NO_ERROR';
+};
+
+var onHashtagValidation = function (evt) {
+  evt.preventDefault();
+  var hashtagsToArray = evt.target.value.toLowerCase().split(' ');
+  inputHashtags.setCustomValidity(ErrorMessage[checkHashtags(hashtagsToArray)]);
+};
+
+var onCommentValidation = function (evt) {
+  evt.preventDefault();
+  if (inputComments.value.length > COMMENT_MAX_LENGTH) {
+    inputComments.setCustomValidity(ErrorMessage.COMMENT_ERROR);
+  } else {
+    inputComments.setCustomValidity('');
+  }
+};
+
 var onOpenFormUploadFile = function () {
   formChangeUploadFile.classList.remove(ClassNames.HIDDEN);
   formChangeUploadFileExit.addEventListener('click', onCloseFormUploadFile);
@@ -321,6 +384,8 @@ var onOpenFormUploadFile = function () {
   filterList.addEventListener('keydown', onChangeFilterPressEnter);
   scaleControlBigger.addEventListener('click', onChangeScaleBigger);
   scaleControlSmaller.addEventListener('click', onChangeScaleSmaller);
+  inputHashtags.addEventListener('input', onHashtagValidation);
+  inputComments.addEventListener('input', onCommentValidation);
 };
 
 var onCloseFormUploadFile = function () {
@@ -334,10 +399,11 @@ var onCloseFormUploadFile = function () {
   filterList.removeEventListener('keydown', onChangeFilterPressEnter);
   scaleControlBigger.removeEventListener('click', onChangeScaleBigger);
   scaleControlSmaller.removeEventListener('click', onChangeScaleSmaller);
+  inputHashtags.removeEventListener('input', onHashtagValidation);
 };
 
 var onCloseFormUploadFilePressEsc = function (evt) {
-  if (evt.keyCode === Keydown.ESC) {
+  if (evt.keyCode === Keydown.ESC && document.activeElement.id !== COMMENTS_ID && document.activeElement.id !== HASHTAGS_ID) {
     onCloseFormUploadFile();
   }
 };
@@ -353,4 +419,3 @@ formUploadFile.addEventListener('change', onOpenFormUploadFile);
 
 // document.querySelector('.social__comment-count').classList.add('visually-hidden');
 // document.querySelector('.comments-loader').classList.add('visually-hidden');
-
