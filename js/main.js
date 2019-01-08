@@ -20,6 +20,11 @@ var HASHTAG_MIN_LENGTH = 1;
 var HASHTAG_FIRST_SYMBOL = '#';
 var COMMENTS_ID = 'comments';
 var HASHTAGS_ID = 'hashtags';
+var NAME_DEFAULT_FILTER = 'CHROME';
+var VALUE_DEFAULT_SLIDER = 20;
+var MAX_VALUE_SLIDER = 100;
+var MIN_VALUE_SLIDER = 0;
+var NUMBER_SYSTEM = 10;
 
 var ErrorMessage = {
   START_ERROR: 'Хэш-тег должен начинаться с символа # (решётка)!',
@@ -134,6 +139,7 @@ var Selectors = {
   EFFECT_LEVEL_VALUE: '.effect-level__value',
   SLIDER_PIN: '.effect-level__pin',
   SLIDER_LINE: '.effect-level__line',
+  SLIDER_DEPTH_IDENTIFIER: '.effect-level__depth',
   FILTER_LIST: '.effects__list',
   UPLOAD_IMG: '.img-upload__preview img',
   SLIDER: '.img-upload__effect-level',
@@ -194,6 +200,7 @@ var formChangeUploadFileExit = document.querySelector(Selectors.IMG_UPLOAD_EXIT)
 var slider = formChangeUploadFile.querySelector(Selectors.SLIDER);
 var pinSlider = formChangeUploadFile.querySelector(Selectors.SLIDER_PIN);
 var filterSliderBar = formChangeUploadFile.querySelector(Selectors.SLIDER_LINE);
+var filterSliderDepthIdentifier = formChangeUploadFile.querySelector(Selectors.SLIDER_DEPTH_IDENTIFIER);
 var filterInputLevelValue = formChangeUploadFile.querySelector(Selectors.EFFECT_LEVEL_VALUE);
 var filterList = formChangeUploadFile.querySelector(Selectors.FILTER_LIST);
 var uploadImgPreview = formChangeUploadFile.querySelector(Selectors.UPLOAD_IMG);
@@ -307,18 +314,33 @@ var onChangeScaleSmaller = function () {
   return uploadImgPreview;
 };
 
+var currentFilter = NAME_DEFAULT_FILTER;
+
 var onChangeFilter = function (evt) {
   if (evt.target.tagName === TAG_NAME_FOR_DELEGATION_FILTER) {
-    var currentFilter = evt.target.id.toUpperCase();
+    sliderCharacteristics = {};
+    filterInputLevelValue.value = VALUE_DEFAULT_SLIDER;
+    filterSliderDepthIdentifier.style.width = VALUE_DEFAULT_SLIDER + '%';
+    pinSlider.style.left = VALUE_DEFAULT_SLIDER + '%';
+    currentFilter = evt.target.id.toUpperCase();
     if (Filters[currentFilter].hideSlider) {
       slider.classList.add(ClassNames.HIDDEN);
+      uploadImgPreview.style.filter = '';
       return uploadImgPreview;
     }
     removeClassHidden();
-    uploadImgPreview.style.filter = Filters[currentFilter].cssFilter(filterInputLevelValue.value);
+    filterInputLevelValue.value = MAX_VALUE_SLIDER;
+    renderSlider(MAX_VALUE_SLIDER);
+    sliderCharacteristics.changeValue = parseInt(filterInputLevelValue.value, NUMBER_SYSTEM);
     return uploadImgPreview;
   }
   return uploadImgPreview;
+};
+
+var renderSlider = function (value) {
+  filterSliderDepthIdentifier.style.width = value + '%';
+  pinSlider.style.left = value + '%';
+  uploadImgPreview.style.filter = Filters[currentFilter].cssFilter(value);
 };
 
 var onChangeFilterPressEnter = function (evt) {
@@ -327,8 +349,46 @@ var onChangeFilterPressEnter = function (evt) {
   }
 };
 
-var onPinSliderMouseup = function () {
-  filterInputLevelValue.value = pinSlider.offsetLeft * PROPORTION_FACTOR / filterSliderBar.clientWidth;
+var sliderCharacteristics = {};
+
+var onPinSliderMouseDown = function (pinMouseDownEvt) {
+  pinMouseDownEvt.preventDefault();
+  if (pinMouseDownEvt.which !== 1) {
+    return;
+  }
+  if (!pinMouseDownEvt.target.closest(Selectors.SLIDER_PIN)) {
+    return;
+  }
+  sliderCharacteristics.widthSliderBar = filterSliderBar.clientWidth;
+  sliderCharacteristics.pinStartCoordinates = pinSlider.getBoundingClientRect().x;
+  sliderCharacteristics.pinClickCoordinate = pinMouseDownEvt.offsetX;
+  sliderCharacteristics.value = VALUE_DEFAULT_SLIDER;
+  var onSliderMouseMove = function (sliderMouseMoveEvt) {
+    sliderMouseMoveEvt.preventDefault();
+    var mouseStartPos = sliderCharacteristics.pinStartCoordinates + sliderCharacteristics.pinClickCoordinate;
+    if (sliderCharacteristics.changeValue) {
+      sliderCharacteristics.value = sliderCharacteristics.changeValue;
+    }
+    sliderCharacteristics.pinShift = sliderMouseMoveEvt.clientX - mouseStartPos;
+    filterInputLevelValue.value = Math.round(sliderCharacteristics.pinShift * PROPORTION_FACTOR / sliderCharacteristics.widthSliderBar) + sliderCharacteristics.value;
+    if (filterInputLevelValue.value < MIN_VALUE_SLIDER) {
+      filterInputLevelValue.value = MIN_VALUE_SLIDER;
+    }
+    if (filterInputLevelValue.value > MAX_VALUE_SLIDER) {
+      filterInputLevelValue.value = MAX_VALUE_SLIDER;
+    }
+    renderSlider(filterInputLevelValue.value);
+  };
+
+  var onPinSliderMouseup = function (pinMouseUpEvt) {
+    pinMouseUpEvt.preventDefault();
+    sliderCharacteristics.changeValue = parseInt(filterInputLevelValue.value, NUMBER_SYSTEM);
+    document.removeEventListener('mousemove', onSliderMouseMove);
+    document.removeEventListener('mouseup', onPinSliderMouseup);
+  };
+
+  document.addEventListener('mouseup', onPinSliderMouseup);
+  document.addEventListener('mousemove', onSliderMouseMove);
 };
 
 var checkHashtags = function (hashtagsToArray) {
@@ -379,7 +439,7 @@ var onOpenFormUploadFile = function () {
   formChangeUploadFileExit.addEventListener('click', onCloseFormUploadFile);
   formChangeUploadFileExit.addEventListener('keydown', onCloseFormUploadFilePressEnter);
   document.addEventListener('keydown', onCloseFormUploadFilePressEsc);
-  pinSlider.addEventListener('mouseup', onPinSliderMouseup);
+  filterSliderBar.addEventListener('mousedown', onPinSliderMouseDown);
   filterList.addEventListener('click', onChangeFilter);
   filterList.addEventListener('keydown', onChangeFilterPressEnter);
   scaleControlBigger.addEventListener('click', onChangeScaleBigger);
@@ -394,7 +454,6 @@ var onCloseFormUploadFile = function () {
   formChangeUploadFileExit.removeEventListener('keydown', onCloseFormUploadFilePressEnter);
   document.removeEventListener('keydown', onCloseFormUploadFilePressEsc);
   formUploadFile.value = null;
-  pinSlider.removeEventListener('mouseup', onPinSliderMouseup);
   filterList.removeEventListener('click', onChangeFilter);
   filterList.removeEventListener('keydown', onChangeFilterPressEnter);
   scaleControlBigger.removeEventListener('click', onChangeScaleBigger);
