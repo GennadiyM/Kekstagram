@@ -351,44 +351,50 @@ var onChangeFilterPressEnter = function (evt) {
 
 var sliderCharacteristics = {};
 
-var onPinSliderMouseDown = function (pinMouseDownEvt) {
+var onSliderMouseDown = function (pinMouseDownEvt) {
   pinMouseDownEvt.preventDefault();
   if (pinMouseDownEvt.which !== 1) {
-    return;
-  }
-  if (!pinMouseDownEvt.target.closest(Selectors.SLIDER_PIN)) {
     return;
   }
   sliderCharacteristics.widthSliderBar = filterSliderBar.clientWidth;
   sliderCharacteristics.pinStartCoordinates = pinSlider.getBoundingClientRect().x;
   sliderCharacteristics.pinClickCoordinate = pinMouseDownEvt.offsetX;
   sliderCharacteristics.value = VALUE_DEFAULT_SLIDER;
-  var onSliderMouseMove = function (sliderMouseMoveEvt) {
-    sliderMouseMoveEvt.preventDefault();
-    var mouseStartPos = sliderCharacteristics.pinStartCoordinates + sliderCharacteristics.pinClickCoordinate;
-    if (sliderCharacteristics.changeValue) {
-      sliderCharacteristics.value = sliderCharacteristics.changeValue;
-    }
-    sliderCharacteristics.pinShift = sliderMouseMoveEvt.clientX - mouseStartPos;
-    filterInputLevelValue.value = Math.round(sliderCharacteristics.pinShift * PROPORTION_FACTOR / sliderCharacteristics.widthSliderBar) + sliderCharacteristics.value;
-    if (filterInputLevelValue.value < MIN_VALUE_SLIDER) {
-      filterInputLevelValue.value = MIN_VALUE_SLIDER;
-    }
-    if (filterInputLevelValue.value > MAX_VALUE_SLIDER) {
-      filterInputLevelValue.value = MAX_VALUE_SLIDER;
-    }
-    renderSlider(filterInputLevelValue.value);
-  };
+  if (sliderCharacteristics.changeValue) {
+    sliderCharacteristics.value = sliderCharacteristics.changeValue;
+  }
+  if (pinMouseDownEvt.target.closest(Selectors.SLIDER_PIN)) {
+    var onSliderMouseMove = function (sliderMouseMoveEvt) {
+      sliderMouseMoveEvt.preventDefault();
+      var mouseStartPos = sliderCharacteristics.pinStartCoordinates + sliderCharacteristics.pinClickCoordinate;
+      sliderCharacteristics.pinShift = sliderMouseMoveEvt.clientX - mouseStartPos;
+      filterInputLevelValue.value = Math.round(sliderCharacteristics.pinShift * PROPORTION_FACTOR / sliderCharacteristics.widthSliderBar) + sliderCharacteristics.value;
+      if (filterInputLevelValue.value < MIN_VALUE_SLIDER) {
+        filterInputLevelValue.value = MIN_VALUE_SLIDER;
+      }
+      if (filterInputLevelValue.value > MAX_VALUE_SLIDER) {
+        filterInputLevelValue.value = MAX_VALUE_SLIDER;
+      }
+      renderSlider(filterInputLevelValue.value);
+    };
 
-  var onPinSliderMouseup = function (pinMouseUpEvt) {
-    pinMouseUpEvt.preventDefault();
+    var onPinSliderMouseup = function (pinMouseUpEvt) {
+      pinMouseUpEvt.preventDefault();
+      sliderCharacteristics.changeValue = parseInt(filterInputLevelValue.value, NUMBER_SYSTEM);
+      document.removeEventListener('mousemove', onSliderMouseMove);
+      document.removeEventListener('mouseup', onPinSliderMouseup);
+    };
+    document.addEventListener('mouseup', onPinSliderMouseup);
+    document.addEventListener('mousemove', onSliderMouseMove);
+    return;
+  }
+
+  if (pinMouseDownEvt.target.closest(Selectors.SLIDER_LINE)) {
+    filterInputLevelValue.value = Math.round(pinMouseDownEvt.offsetX * PROPORTION_FACTOR / sliderCharacteristics.widthSliderBar);
     sliderCharacteristics.changeValue = parseInt(filterInputLevelValue.value, NUMBER_SYSTEM);
-    document.removeEventListener('mousemove', onSliderMouseMove);
-    document.removeEventListener('mouseup', onPinSliderMouseup);
-  };
-
-  document.addEventListener('mouseup', onPinSliderMouseup);
-  document.addEventListener('mousemove', onSliderMouseMove);
+    renderSlider(filterInputLevelValue.value);
+  }
+  return;
 };
 
 var checkHashtags = function (hashtagsToArray) {
@@ -439,7 +445,7 @@ var onOpenFormUploadFile = function () {
   formChangeUploadFileExit.addEventListener('click', onCloseFormUploadFile);
   formChangeUploadFileExit.addEventListener('keydown', onCloseFormUploadFilePressEnter);
   document.addEventListener('keydown', onCloseFormUploadFilePressEsc);
-  filterSliderBar.addEventListener('mousedown', onPinSliderMouseDown);
+  filterSliderBar.addEventListener('mousedown', onSliderMouseDown);
   filterList.addEventListener('click', onChangeFilter);
   filterList.addEventListener('keydown', onChangeFilterPressEnter);
   scaleControlBigger.addEventListener('click', onChangeScaleBigger);
