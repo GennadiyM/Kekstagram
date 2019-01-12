@@ -1,14 +1,10 @@
 'use strict';
 
 (function () {
-  var DESCRIPTION = 'Описание фотографии';
-  var MAX_COUNT_COMMENTS = 5;
-  var MIN_COUNT_COMMENTS = 1;
   var MAX_COUNT_COMMENTS_IN_PAGE = 5;
   var CLASS_BODY_WHEN_BIG_PICTURE_OPEN = 'modal-open';
 
-
-  var Selectors = {
+  var Selector = {
     PAGE_BODY: 'body',
     SOCIAL_CAPTION: '.social__caption',
     SOCIAL_PICTURE: '.social__picture',
@@ -19,13 +15,14 @@
     BIG_PICTURE: '.big-picture',
     BIG_PICTURE_EXIT: '.big-picture__cancel',
     TEMPLATE_SOCIAL_COMMENT: '.social__comment',
+    INPUT_FOR_COMMENTS: '.social__footer-text',
   };
 
-  var bigPicture = document.querySelector(Selectors.BIG_PICTURE);
-  var bigPictureCommentList = bigPicture.querySelector(Selectors.COMMENTS_LIST);
-  var pageBody = document.querySelector(Selectors.PAGE_BODY);
-  var buttonExitBigPhoto = bigPicture.querySelector(Selectors.BIG_PICTURE_EXIT);
-  var templateComment = document.querySelector(Selectors.TEMPLATE_SOCIAL_COMMENT);
+  var bigPicture = document.querySelector(Selector.BIG_PICTURE);
+  var bigPictureCommentList = bigPicture.querySelector(Selector.COMMENTS_LIST);
+  var pageBody = document.querySelector(Selector.PAGE_BODY);
+  var buttonExitBigPhoto = bigPicture.querySelector(Selector.BIG_PICTURE_EXIT);
+  var templateComment = document.querySelector(Selector.TEMPLATE_SOCIAL_COMMENT);
 
   var onCloseBigPhoto = function () {
     bigPicture.classList.add(window.utils.CLASS_HIDDEN);
@@ -36,7 +33,7 @@
   };
 
   var onCloseBigPhotoPressEsc = function (evt) {
-    if (evt.keyCode === window.utils.Keydown.ESC) {
+    if (evt.keyCode === window.utils.Keydown.ESC && document.activeElement !== document.querySelector(Selector.INPUT_FOR_COMMENTS)) {
       onCloseBigPhoto();
     }
   };
@@ -56,26 +53,26 @@
   };
 
   window.preview = {
-    getBigPicture: function (numberPicture) {
+    getBigPicture: function (data) {
       onCloneTemplateUserPictureClick();
-      bigPicture.querySelector(Selectors.URL_BIG_PICTURE).src = window.data[numberPicture].url;
-      bigPicture.querySelector(Selectors.LIKES_COUNT).textContent = window.data[numberPicture].likes;
-      bigPicture.querySelector(Selectors.SOCIAL_CAPTION).textContent = DESCRIPTION;
+      bigPicture.querySelector(Selector.URL_BIG_PICTURE).src = data.url;
+      bigPicture.querySelector(Selector.LIKES_COUNT).textContent = data.likes;
+      bigPicture.querySelector(Selector.SOCIAL_CAPTION).textContent = data.description;
       bigPictureCommentList.innerHTML = '';
       var cloneTemplateComment = null;
-      if (window.data[numberPicture].comments.length > MAX_COUNT_COMMENTS_IN_PAGE) {
+      if (data.comments.length > MAX_COUNT_COMMENTS_IN_PAGE) {
         for (var i = 0; i < MAX_COUNT_COMMENTS_IN_PAGE; i++) {
           cloneTemplateComment = templateComment.cloneNode(true);
           bigPictureCommentList.appendChild(cloneTemplateComment);
-          cloneTemplateComment.querySelector(Selectors.SOCIAL_PICTURE).src = 'img/avatar-' + (Math.floor(Math.random() * (MAX_COUNT_COMMENTS + window.utils.TERM_FOR_MAX_VALUE)) + MIN_COUNT_COMMENTS) + '.svg';
-          cloneTemplateComment.querySelector(Selectors.SOCIAL_TEXT).textContent = window.data[numberPicture].comments[i];
+          cloneTemplateComment.querySelector(Selector.SOCIAL_PICTURE).src = data.comments[i].avatar;
+          cloneTemplateComment.querySelector(Selector.SOCIAL_TEXT).textContent = data.comments[i].message;
         }
       } else {
-        for (i = 0; i < window.data[numberPicture].comments.length; i++) {
+        for (i = 0; i < data.comments.length; i++) {
           cloneTemplateComment = templateComment.cloneNode(true);
           bigPictureCommentList.appendChild(cloneTemplateComment);
-          cloneTemplateComment.querySelector(Selectors.SOCIAL_PICTURE).src = 'img/avatar-' + (Math.floor(Math.random() * (MAX_COUNT_COMMENTS + window.utils.TERM_FOR_MAX_VALUE)) + MIN_COUNT_COMMENTS) + '.svg';
-          cloneTemplateComment.querySelector(Selectors.SOCIAL_TEXT).textContent = window.data[numberPicture].comments[i];
+          cloneTemplateComment.querySelector(Selector.SOCIAL_PICTURE).src = data.comments[i].avatar;
+          cloneTemplateComment.querySelector(Selector.SOCIAL_TEXT).textContent = data.comments[i].message;
         }
       }
     }

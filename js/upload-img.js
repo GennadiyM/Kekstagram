@@ -75,13 +75,14 @@
   var MAX_VALUE_SLIDER = 100;
   var MIN_VALUE_SLIDER = 0;
 
-  var Identifiers = {
+  var Identifier = {
+    UPLOAD_FORM: '#upload-select-image',
     FORM_UPLOAD_FILE: '#upload-file',
     COMMENTS: 'comments',
     HASHTAGS: 'hashtags',
   };
 
-  var Selectors = {
+  var Selector = {
     SCALE_BIGGER: '.scale__control--bigger',
     SCALE_SMALLER: '.scale__control--smaller',
     FILTER_LIST: '.effects__list',
@@ -97,20 +98,21 @@
     EFFECT_LEVEL_VALUE: '.effect-level__value',
   };
 
-  var formUploadFile = document.querySelector(Identifiers.FORM_UPLOAD_FILE);
-  var formChangeUploadFileExit = document.querySelector(Selectors.IMG_UPLOAD_EXIT);
-  var filterList = document.querySelector(Selectors.FILTER_LIST);
-  var scaleControlSmaller = document.querySelector(Selectors.SCALE_SMALLER);
-  var scaleControlBigger = document.querySelector(Selectors.SCALE_BIGGER);
-  var formChangeUploadFile = document.querySelector(Selectors.IMG_UPLOAD_OVERLAY);
-  var filterSliderBar = formChangeUploadFile.querySelector(Selectors.SLIDER_LINE);
-  var slider = formChangeUploadFile.querySelector(Selectors.SLIDER);
-  var pinSlider = formChangeUploadFile.querySelector(Selectors.SLIDER_PIN);
-  var filterSliderDepthIdentifier = formChangeUploadFile.querySelector(Selectors.SLIDER_DEPTH_IDENTIFIER);
-  var filterInputLevelValue = formChangeUploadFile.querySelector(Selectors.EFFECT_LEVEL_VALUE);
-  window.uploadImg.uploadImgPreview = formChangeUploadFile.querySelector(Selectors.UPLOAD_IMG);
-  window.uploadImg.inputHashtags = formChangeUploadFile.querySelector(Selectors.INPUT_HASHTAGS);
-  window.uploadImg.inputComments = formChangeUploadFile.querySelector(Selectors.INPUT_COMMENTS);
+  var formUploadFile = document.querySelector(Identifier.FORM_UPLOAD_FILE);
+  var uploadForm = document.querySelector(Identifier.UPLOAD_FORM);
+  var formChangeUploadFileExit = document.querySelector(Selector.IMG_UPLOAD_EXIT);
+  var filterList = document.querySelector(Selector.FILTER_LIST);
+  var scaleControlSmaller = document.querySelector(Selector.SCALE_SMALLER);
+  var scaleControlBigger = document.querySelector(Selector.SCALE_BIGGER);
+  var formChangeUploadFile = document.querySelector(Selector.IMG_UPLOAD_OVERLAY);
+  var filterSliderBar = formChangeUploadFile.querySelector(Selector.SLIDER_LINE);
+  var slider = formChangeUploadFile.querySelector(Selector.SLIDER);
+  var pinSlider = formChangeUploadFile.querySelector(Selector.SLIDER_PIN);
+  var filterSliderDepthIdentifier = formChangeUploadFile.querySelector(Selector.SLIDER_DEPTH_IDENTIFIER);
+  var filterInputLevelValue = formChangeUploadFile.querySelector(Selector.EFFECT_LEVEL_VALUE);
+  window.uploadImg.uploadImgPreview = formChangeUploadFile.querySelector(Selector.UPLOAD_IMG);
+  window.uploadImg.inputHashtags = formChangeUploadFile.querySelector(Selector.INPUT_HASHTAGS);
+  window.uploadImg.inputComments = formChangeUploadFile.querySelector(Selector.INPUT_COMMENTS);
 
   var removeClassHidden = function () {
     if (slider.classList.contains(window.utils.CLASS_HIDDEN)) {
@@ -166,7 +168,7 @@
     if (sliderCharacteristics.changeValue) {
       sliderCharacteristics.value = sliderCharacteristics.changeValue;
     }
-    if (pinMouseDownEvt.target.closest(Selectors.SLIDER_PIN)) {
+    if (pinMouseDownEvt.target.closest(Selector.SLIDER_PIN)) {
       var onSliderMouseMove = function (sliderMouseMoveEvt) {
         sliderMouseMoveEvt.preventDefault();
         var mouseStartPos = sliderCharacteristics.pinStartCoordinates + sliderCharacteristics.pinClickCoordinate;
@@ -191,7 +193,7 @@
       document.addEventListener('mousemove', onSliderMouseMove);
       return;
     }
-    if (pinMouseDownEvt.target.closest(Selectors.SLIDER_LINE)) {
+    if (pinMouseDownEvt.target.closest(Selector.SLIDER_LINE)) {
       filterInputLevelValue.value = Math.round(pinMouseDownEvt.offsetX * PROPORTION_FACTOR / sliderCharacteristics.widthSliderBar);
       sliderCharacteristics.changeValue = parseInt(filterInputLevelValue.value, 10);
       renderSlider(filterInputLevelValue.value);
@@ -200,7 +202,7 @@
   };
 
   var onCloseFormUploadFilePressEsc = function (evt) {
-    if (evt.keyCode === window.utils.Keydown.ESC && document.activeElement.id !== Identifiers.COMMENTS && document.activeElement.id !== Identifiers.HASHTAGS) {
+    if (evt.keyCode === window.utils.Keydown.ESC  && document.activeElement !==  window.uploadImg.inputComments) {
       onCloseFormUploadFile();
     }
   };
@@ -211,7 +213,15 @@
     }
   };
 
+  var onSubmitForm = function (submitEvt) {
+    submitEvt.preventDefault();
+    window.backend.save(window.message.success, window.message.onErrorLoadImg, new FormData(uploadForm));
+    onCloseFormUploadFile();
+
+  };
+
   var onOpenFormUploadFile = function () {
+    uploadForm.addEventListener('submit', onSubmitForm);
     sliderCharacteristics = {};
     formChangeUploadFile.classList.remove(window.utils.CLASS_HIDDEN);
     renderSlider(VALUE_DEFAULT_SLIDER);
@@ -244,6 +254,7 @@
     scaleControlSmaller.removeEventListener('click', window.scaleImg.onChangeScaleSmaller);
     window.uploadImg.inputHashtags.removeEventListener('input', window.validation.onHashtagValidation);
     window.uploadImg.inputComments.removeEventListener('input', window.validation.onCommentValidation);
+    uploadForm.removeEventListener('submit', onSubmitForm);
   };
 
   formUploadFile.addEventListener('change', onOpenFormUploadFile);
