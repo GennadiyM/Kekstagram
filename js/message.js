@@ -8,6 +8,7 @@
   };
 
   var CLASS_ERROR_BUTTON = 'error__button';
+  var NEW_TEXT_BUTTON = 'ок';
 
   var Selectors = {
     SUCCESS: '.success',
@@ -110,6 +111,8 @@
     },
     onErrorLoadImg: function (result) {
       renderMessageError(errorTitle, result);
+      messageError.querySelector(Selectors.ERROR_BUTTON).remove();
+      messageError.querySelector(Selectors.ERROR_BUTTON).textContent = NEW_TEXT_BUTTON;
       main.insertAdjacentElement('afterbegin', messageError);
       document.addEventListener('click', deleteErrorLoadImg);
       messageError.addEventListener('click', onMessageErrorClick);
