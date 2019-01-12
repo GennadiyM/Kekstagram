@@ -214,8 +214,8 @@
       <div class="error__inner">
         <h2 class="error__title">Ошибка загрузки файла</h2>
         <div class="error__buttons">
-          <button type="button" class="error__button">Попробовать снова</button>
-          <button type="button" class="error__button">Загрузить другой файл</button>
+          <button id="repeat" type="button" class="error__button">Попробовать снова</button>
+          <button id="upload" type="button" class="error__button">Загрузить другой файл</button>
         </div>
       </div>
     </section>
@@ -236,7 +236,8 @@
     <div class="img-upload__message  img-upload__message--loading">Загружаем...</div>
   </template>
   <script src="js/utils.js"></script>
-  <script src="js/data.js"></script>
+  <script src="js/backend.js"></script>
+  <script src="js/message.js"></script>
   <script src="js/picture.js"></script>
   <script src="js/preview.js"></script>
   <script src="js/scale-img.js"></script>

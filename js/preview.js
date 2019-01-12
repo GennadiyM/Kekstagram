@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var DESCRIPTION = 'Описание фотографии';
   var MAX_COUNT_COMMENTS = 5;
   var MIN_COUNT_COMMENTS = 1;
   var MAX_COUNT_COMMENTS_IN_PAGE = 5;
@@ -56,26 +55,26 @@
   };
 
   window.preview = {
-    getBigPicture: function (numberPicture) {
+    getBigPicture: function (data) {
       onCloneTemplateUserPictureClick();
-      bigPicture.querySelector(Selectors.URL_BIG_PICTURE).src = window.data[numberPicture].url;
-      bigPicture.querySelector(Selectors.LIKES_COUNT).textContent = window.data[numberPicture].likes;
-      bigPicture.querySelector(Selectors.SOCIAL_CAPTION).textContent = DESCRIPTION;
+      bigPicture.querySelector(Selectors.URL_BIG_PICTURE).src = data.url;
+      bigPicture.querySelector(Selectors.LIKES_COUNT).textContent = data.likes;
+      bigPicture.querySelector(Selectors.SOCIAL_CAPTION).textContent = data.description;
       bigPictureCommentList.innerHTML = '';
       var cloneTemplateComment = null;
-      if (window.data[numberPicture].comments.length > MAX_COUNT_COMMENTS_IN_PAGE) {
+      if (data.comments.length > MAX_COUNT_COMMENTS_IN_PAGE) {
         for (var i = 0; i < MAX_COUNT_COMMENTS_IN_PAGE; i++) {
           cloneTemplateComment = templateComment.cloneNode(true);
           bigPictureCommentList.appendChild(cloneTemplateComment);
-          cloneTemplateComment.querySelector(Selectors.SOCIAL_PICTURE).src = 'img/avatar-' + (Math.floor(Math.random() * (MAX_COUNT_COMMENTS + window.utils.TERM_FOR_MAX_VALUE)) + MIN_COUNT_COMMENTS) + '.svg';
-          cloneTemplateComment.querySelector(Selectors.SOCIAL_TEXT).textContent = window.data[numberPicture].comments[i];
+          cloneTemplateComment.querySelector(Selectors.SOCIAL_PICTURE).src = data.comments[i].avatar;
+          cloneTemplateComment.querySelector(Selectors.SOCIAL_TEXT).textContent =data.comments[i].message;
         }
       } else {
-        for (i = 0; i < window.data[numberPicture].comments.length; i++) {
+        for (i = 0; i < data.comments.length; i++) {
           cloneTemplateComment = templateComment.cloneNode(true);
           bigPictureCommentList.appendChild(cloneTemplateComment);
-          cloneTemplateComment.querySelector(Selectors.SOCIAL_PICTURE).src = 'img/avatar-' + (Math.floor(Math.random() * (MAX_COUNT_COMMENTS + window.utils.TERM_FOR_MAX_VALUE)) + MIN_COUNT_COMMENTS) + '.svg';
-          cloneTemplateComment.querySelector(Selectors.SOCIAL_TEXT).textContent = window.data[numberPicture].comments[i];
+          cloneTemplateComment.querySelector(Selectors.SOCIAL_PICTURE).src = data.comments[i].avatar;
+          cloneTemplateComment.querySelector(Selectors.SOCIAL_TEXT).textContent =data.comments[i].message;
         }
       }
     }

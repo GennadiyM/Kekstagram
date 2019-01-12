@@ -76,6 +76,7 @@
   var MIN_VALUE_SLIDER = 0;
 
   var Identifiers = {
+    UPLOAD_FORM: '#upload-select-image',
     FORM_UPLOAD_FILE: '#upload-file',
     COMMENTS: 'comments',
     HASHTAGS: 'hashtags',
@@ -98,6 +99,7 @@
   };
 
   var formUploadFile = document.querySelector(Identifiers.FORM_UPLOAD_FILE);
+  var uploadForm = document.querySelector(Identifiers.UPLOAD_FORM);
   var formChangeUploadFileExit = document.querySelector(Selectors.IMG_UPLOAD_EXIT);
   var filterList = document.querySelector(Selectors.FILTER_LIST);
   var scaleControlSmaller = document.querySelector(Selectors.SCALE_SMALLER);
@@ -200,7 +202,7 @@
   };
 
   var onCloseFormUploadFilePressEsc = function (evt) {
-    if (evt.keyCode === window.utils.Keydown.ESC && document.activeElement.id !== Identifiers.COMMENTS && document.activeElement.id !== Identifiers.HASHTAGS) {
+    if (evt.keyCode === window.utils.Keydown.ESC) {
       onCloseFormUploadFile();
     }
   };
@@ -211,7 +213,15 @@
     }
   };
 
+
+  var onSubmitForm = function (submitEvt) {
+    submitEvt.preventDefault();
+    window.uploadImg.formData = new FormData(uploadForm);
+    window.backend.save(onCloseFormUploadFile, window.message.onErrorLoadImg, window.uploadImg.formData);
+  };
+
   var onOpenFormUploadFile = function () {
+    uploadForm.addEventListener('submit', onSubmitForm);
     sliderCharacteristics = {};
     formChangeUploadFile.classList.remove(window.utils.CLASS_HIDDEN);
     renderSlider(VALUE_DEFAULT_SLIDER);
@@ -244,6 +254,7 @@
     scaleControlSmaller.removeEventListener('click', window.scaleImg.onChangeScaleSmaller);
     window.uploadImg.inputHashtags.removeEventListener('input', window.validation.onHashtagValidation);
     window.uploadImg.inputComments.removeEventListener('input', window.validation.onCommentValidation);
+    uploadForm.removeEventListener('submit', onSubmitForm);
   };
 
   formUploadFile.addEventListener('change', onOpenFormUploadFile);
