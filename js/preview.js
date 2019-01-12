@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  var MAX_COUNT_COMMENTS = 5;
-  var MIN_COUNT_COMMENTS = 1;
   var MAX_COUNT_COMMENTS_IN_PAGE = 5;
   var CLASS_BODY_WHEN_BIG_PICTURE_OPEN = 'modal-open';
 
@@ -67,14 +65,14 @@
           cloneTemplateComment = templateComment.cloneNode(true);
           bigPictureCommentList.appendChild(cloneTemplateComment);
           cloneTemplateComment.querySelector(Selectors.SOCIAL_PICTURE).src = data.comments[i].avatar;
-          cloneTemplateComment.querySelector(Selectors.SOCIAL_TEXT).textContent =data.comments[i].message;
+          cloneTemplateComment.querySelector(Selectors.SOCIAL_TEXT).textContent = data.comments[i].message;
         }
       } else {
         for (i = 0; i < data.comments.length; i++) {
           cloneTemplateComment = templateComment.cloneNode(true);
           bigPictureCommentList.appendChild(cloneTemplateComment);
           cloneTemplateComment.querySelector(Selectors.SOCIAL_PICTURE).src = data.comments[i].avatar;
-          cloneTemplateComment.querySelector(Selectors.SOCIAL_TEXT).textContent =data.comments[i].message;
+          cloneTemplateComment.querySelector(Selectors.SOCIAL_TEXT).textContent = data.comments[i].message;
         }
       }
     }

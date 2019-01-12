@@ -5,14 +5,15 @@
   var Identifiers = {
     SUCCESS: '#success',
     ERROR: '#error',
-    ERROR_BUTTON_REPEAT: '#repeat',
-    ERROR_BUTTON_UPLOAD: '#upload',
   };
+
+  var CLASS_ERROR_BUTTON = 'error__button';
 
   var Selectors = {
     SUCCESS: '.success',
     ERROR: '.error',
     ERROR_TITLE: '.error__title',
+    ERROR_BUTTON: '.' + CLASS_ERROR_BUTTON,
     SUCCESS_TITLE: '.success__title',
     SUCCESS_BUTTON: '.success__button',
     MAIN: 'main',
@@ -32,8 +33,6 @@
   var errorTitle = messageError.querySelector(Selectors.ERROR_TITLE);
   var successTitle = messageSuccess.querySelector(Selectors.SUCCESS_TITLE);
   var successButton = messageSuccess.querySelector(Selectors.SUCCESS_BUTTON);
-  var errorButtonRepeat = messageError.querySelector(Identifiers.ERROR_BUTTON_REPEAT);
-  var errorButtonUpload = messageError.querySelector(Identifiers.ERROR_BUTTON_UPLOAD);
   var main = document.querySelector(Selectors.MAIN);
 
   var renderMessageError = function (element, result) {
@@ -65,36 +64,17 @@
 
   var deleteErrorLoadImg = function () {
     messageError.remove();
-    errorButtonRepeat.removeEventListener('click', deleteErrorLoadImg);
     document.removeEventListener('keydown', deleteErrorLoadImgPressEsc);
-    errorButtonRepeat.removeEventListener('keydown', deleteErrorLoadImg);
     document.removeEventListener('click', deleteErrorLoadImg);
   };
 
-  var onButtonRepeatClick = function () {
-    deleteErrorLoadImg();
-    window.backend.save(window.message.onErrorLoadImg, window.uploadImg.formData);
+  var onMessageErrorClick = function (evt) {
+    if (evt.target.className === CLASS_ERROR_BUTTON) {
+      deleteErrorLoadImg();
+    }
   };
-
-  var onButtonUploadClick = function () {
-    deleteErrorLoadImg();
-    window.backend.save(window.message.onErrorLoadImg, window.uploadImg.formData);
-  };
-
   var deleteErrorLoadImgPressEsc = function (evt) {
     if (evt.keyCode === window.utils.Keydown.ESC) {
-      deleteErrorLoadImg();
-    }
-  };
-
-  var onButtonRepeatPressEnter = function (evt) {
-    if (evt.keyCode === window.utils.Keydown.ENTER) {
-      deleteErrorLoadImg();
-    }
-  };
-
-  var onButtonUploadPressEnter = function (evt) {
-    if (evt.keyCode === window.utils.Keydown.ENTER) {
       deleteErrorLoadImg();
     }
   };
@@ -125,20 +105,15 @@
     },
     onErrorLoadPreview: function (result) {
       successButton.remove();
-      renderMessageError(errorTitle, result);
+      renderMessageError(successTitle, result);
       main.insertAdjacentElement('afterbegin', messageSuccess);
     },
     onErrorLoadImg: function (result) {
       renderMessageError(errorTitle, result);
       main.insertAdjacentElement('afterbegin', messageError);
-      errorButtonRepeat.addEventListener('click', onButtonRepeatClick);
-      errorButtonRepeat.addEventListener('click', onButtonRepeatPressEnter);
-      errorButtonUpload.addEventListener('click', onButtonUploadClick);
-      errorButtonUpload.addEventListener('click', onButtonUploadPressEnter);
-      document.addEventListener('keydown', deleteErrorLoadImgPressEsc);
       document.addEventListener('click', deleteErrorLoadImg);
+      messageError.addEventListener('click', onMessageErrorClick);
+      document.addEventListener('keydown', deleteErrorLoadImgPressEsc);
     },
   };
-
-
 })();

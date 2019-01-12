@@ -213,11 +213,9 @@
     }
   };
 
-
   var onSubmitForm = function (submitEvt) {
     submitEvt.preventDefault();
-    window.uploadImg.formData = new FormData(uploadForm);
-    window.backend.save(onCloseFormUploadFile, window.message.onErrorLoadImg, window.uploadImg.formData);
+    window.backend.save(onCloseFormUploadFile, window.message.onErrorLoadImg, new FormData(uploadForm));
   };
 
   var onOpenFormUploadFile = function () {

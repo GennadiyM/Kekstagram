@@ -27,17 +27,20 @@
       xhr.addEventListener('timeout', function () {
         onError(ERROR_TIMEOUT);
       });
+
       xhr.open('GET', URL_LOAD);
       xhr.send();
     },
     save: function (onClose, onError, data) {
       onClose();
       var xhr = new XMLHttpRequest();
-      if (xhr.status === 200) {
-        window.message.success();
-      } else {
-        onError(xhr);
-      }
+      xhr.addEventListener('load', function () {
+        if (xhr.status === 200) {
+          window.message.success();
+        } else {
+          onError(xhr);
+        }
+      });
       xhr.addEventListener('error', function () {
         onError(ERROR_CONNECT);
       });
@@ -49,5 +52,4 @@
       xhr.send(data);
     },
   };
-
 })();
