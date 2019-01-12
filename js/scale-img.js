@@ -2,12 +2,9 @@
 
 (function () {
   var STEP_SCALE = 25;
+  var SELECTOR_SCALE_VALUE = '.scale__control--value';
 
-  var Selectors = {
-    SCALE_VALUE: '.scale__control--value',
-  };
-
-  var scaleControlValue = document.querySelector(Selectors.SCALE_VALUE);
+  var scaleControlValue = document.querySelector(SELECTOR_SCALE_VALUE);
 
   window.scaleImg = {
     onChangeScaleBigger: function () {

@@ -1,16 +1,16 @@
 'use strict';
 
 (function () {
+  var CLASS_ERROR_BUTTON = 'error__button';
+  var NEW_TEXT_BUTTON = 'ок';
+  var REPORT_UNKNOWN_ERROR = 'Статус ошибки: ';
 
-  var Identifiers = {
+  var Identifier = {
     SUCCESS: '#success',
     ERROR: '#error',
   };
 
-  var CLASS_ERROR_BUTTON = 'error__button';
-  var NEW_TEXT_BUTTON = 'ок';
-
-  var Selectors = {
+  var Selector = {
     SUCCESS: '.success',
     ERROR: '.error',
     ERROR_TITLE: '.error__title',
@@ -20,47 +20,24 @@
     MAIN: 'main',
   };
 
-  var ErrorMessage = {
-    STATUS_301: 'Перемещено навсегда',
-    STATUS_400: 'Неверный запрос',
-    STATUS_401: 'Пользователь не авторизован',
-    STATUS_404: 'Ничего не найдено',
-    STATUS_500: 'Сервер пятисотит',
-    UNKNOWN_STATUS: 'Статус ответа: ',
+  var xhrStatusMap = {
+    '301': 'Перемещено навсегда',
+    '400': 'Неверный запрос',
+    '401': 'Пользователь не авторизован',
+    '404': 'Ничего не найдено',
+    '500': 'Сервер пятисотит',
   };
 
-  var messageSuccess = document.querySelector(Identifiers.SUCCESS).content.querySelector(Selectors.SUCCESS);
-  var messageError = document.querySelector(Identifiers.ERROR).content.querySelector(Selectors.ERROR);
-  var errorTitle = messageError.querySelector(Selectors.ERROR_TITLE);
-  var successTitle = messageSuccess.querySelector(Selectors.SUCCESS_TITLE);
-  var successButton = messageSuccess.querySelector(Selectors.SUCCESS_BUTTON);
-  var main = document.querySelector(Selectors.MAIN);
+  var messageSuccess = document.querySelector(Identifier.SUCCESS).content.querySelector(Selector.SUCCESS);
+  var messageError = document.querySelector(Identifier.ERROR).content.querySelector(Selector.ERROR);
+  var errorTitle = messageError.querySelector(Selector.ERROR_TITLE);
+  var successTitle = messageSuccess.querySelector(Selector.SUCCESS_TITLE);
+  var successButton = messageSuccess.querySelector(Selector.SUCCESS_BUTTON);
+  var main = document.querySelector(Selector.MAIN);
+
 
   var renderMessageError = function (element, result) {
-    if (typeof result === 'object') {
-      switch (result.status) {
-        case 301:
-          element.textContent = ErrorMessage.STATUS_301;
-          break;
-        case 400:
-          element.textContent = ErrorMessage.STATUS_400;
-          break;
-        case 401:
-          element.textContent = ErrorMessage.STATUS_401;
-          break;
-        case 404:
-          element.textContent = ErrorMessage.STATUS_404;
-          break;
-        case 500:
-          element.textContent = ErrorMessage.STATUS_500;
-          break;
-        default:
-          element.textContent = ErrorMessage.UNKNOWN_STATUS + result.status + ' ' + result.statusText;
-      }
-    }
-    if (typeof result === 'string') {
-      element.textContent = result;
-    }
+    xhrStatusMap[result.status] ? element.textContent = xhrStatusMap[result.status] : element.textContent = REPORT_UNKNOWN_ERROR + result.status + ' ' + result.statusText;
   };
 
   var deleteErrorLoadImg = function () {
@@ -111,8 +88,6 @@
     },
     onErrorLoadImg: function (result) {
       renderMessageError(errorTitle, result);
-      messageError.querySelector(Selectors.ERROR_BUTTON).remove();
-      messageError.querySelector(Selectors.ERROR_BUTTON).textContent = NEW_TEXT_BUTTON;
       main.insertAdjacentElement('afterbegin', messageError);
       document.addEventListener('click', deleteErrorLoadImg);
       messageError.addEventListener('click', onMessageErrorClick);

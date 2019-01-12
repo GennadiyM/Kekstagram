@@ -31,12 +31,12 @@
       xhr.open('GET', URL_LOAD);
       xhr.send();
     },
-    save: function (onClose, onError, data) {
-      onClose();
+    save: function (onLoad, onError, data) {
       var xhr = new XMLHttpRequest();
+
       xhr.addEventListener('load', function () {
         if (xhr.status === 200) {
-          window.message.success();
+          onLoad();
         } else {
           onError(xhr);
         }
