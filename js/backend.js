@@ -3,20 +3,21 @@
 (function () {
   var URL_LOAD = 'https://js.dump.academy/kekstagram/data';
   var URL_SEND = 'https://js.dump.academy/kekstagram';
-  var TIMEOUT_REQUEST = 10000;
-  var ERROR_CONNECT = 'Произошла ошибка соединения';
-  var ERROR_TIMEOUT = 'Запрос не успел выполниться за ' + TIMEOUT_REQUEST + 'мс';
+  var ERROR_CONNECT = '600';
+  var ERROR_TIMEOUT = '601';
 
   window.backend = {
-    load: function (onLoad, onError) {
+    load: function (getMap, showThumbnails, onError, showFilter) {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
 
       xhr.addEventListener('load', function () {
         if (xhr.status === 200) {
-          onLoad(xhr.response);
+          showThumbnails(xhr.response);
+          showFilter();
+          getMap(xhr.response);
         } else {
-          onError(xhr);
+          onError(xhr.status);
         }
       });
 

@@ -4,6 +4,8 @@
   var CLASS_ERROR_BUTTON = 'error__button';
   var NEW_TEXT_BUTTON = 'ок';
   var REPORT_UNKNOWN_ERROR = 'Статус ошибки: ';
+  var TIMEOUT_REQUEST = 10000;
+
 
   var Identifier = {
     SUCCESS: '#success',
@@ -21,6 +23,8 @@
   };
 
   var xhrStatusMap = {
+    '600': 'Произошла ошибка соединения',
+    '601': 'Запрос не успел выполниться за ' + TIMEOUT_REQUEST + 'мс',
     '301': 'Перемещено навсегда',
     '400': 'Неверный запрос',
     '401': 'Пользователь не авторизован',
@@ -37,7 +41,11 @@
 
 
   var renderMessageError = function (element, result) {
-    xhrStatusMap[result.status] ? element.textContent = xhrStatusMap[result.status] : element.textContent = REPORT_UNKNOWN_ERROR + result.status + ' ' + result.statusText;
+    if (typeof result === 'string') {
+      element.textContent = xhrStatusMap[result];
+      return
+    }
+    element.textContent = xhrStatusMap[result.status] ?  element.textContent = xhrStatusMap[result.status] : element.textContent = REPORT_UNKNOWN_ERROR + result.status + ' ' + result.statusText;
   };
 
   var deleteErrorLoadImg = function () {
