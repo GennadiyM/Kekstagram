@@ -7,9 +7,9 @@
   var thumbnailMap = {};
 
   var Class = {
-    FILTER_WHEN_INACTIVE : 'img-filters--inactive',
-    BUTTON_FILTER_ACTIVE : 'img-filters__button--active',
-  }
+    FILTER_WHEN_INACTIVE: 'img-filters--inactive',
+    BUTTON_FILTER_ACTIVE: 'img-filters__button--active',
+  };
 
   var Selector = {
     PICTURE: '.picture',
@@ -25,18 +25,16 @@
   var reviewFilterButtonList = reviewFilter.querySelectorAll(Selector.REVIEW_FILTER_BUTTON);
   var picturesList = document.querySelector(Selector.PICTURES_LIST);
   var templateUserPicture = document.querySelector(ID_TEMPLATE_PICTURE).content.querySelector(Selector.PICTURE);
+  var lastTimeout = null;
+
 
   var addEvenetListenerOnButtonFilter = function (element, indexButton) {
     element.addEventListener('click', function () {
-      if (window.lastTimeout) {
+      if (lastTimeout) {
         window.clearTimeout(lastTimeout);
       }
-      window.lastTimeout = setTimeout(function() {
-        reviewFilterButtonList.forEach(function (element) {
-          if (element.classList.contains(Class.BUTTON_FILTER_ACTIVE)) {
-            element.classList.remove(Class.BUTTON_FILTER_ACTIVE)
-          }
-        });
+      lastTimeout = window.setTimeout(function () {
+        deleteClassOnButtonActive();
         reviewFilterButtonList[indexButton].classList.add(Class.BUTTON_FILTER_ACTIVE);
         window.picture.delThumbnailList();
         window.picture.renderThumbnailList(thumbnailMap[indexButton]);
@@ -44,8 +42,13 @@
     });
   };
 
-
-
+  var deleteClassOnButtonActive = function () {
+    reviewFilterButtonList.forEach(function (button) {
+      if (button.classList.contains(Class.BUTTON_FILTER_ACTIVE)) {
+        button.classList.remove(Class.BUTTON_FILTER_ACTIVE);
+      }
+    });
+  };
 
   var getRandomThumbnailList = function (data, count) {
     var randomThumbnailList = [];
@@ -57,7 +60,7 @@
     } while (randomThumbnailList.length < count);
 
     return randomThumbnailList;
-  }
+  };
 
 
   window.picture = {
@@ -88,10 +91,10 @@
         addEvenetListenerOnButtonFilter(element, index);
       });
     },
-    getThumbnailMap: function(data) {
+    getThumbnailMap: function (data) {
       thumbnailMap['0'] = data;
       thumbnailMap['1'] = getRandomThumbnailList(data, MAX_COUNT_THUMBNAILS);
-      thumbnailMap['2'] = data.slice().sort(function(a, b) {
+      thumbnailMap['2'] = data.slice().sort(function (a, b) {
         if (a.comments < b.comments) {
           return 1;
         }

@@ -2,7 +2,6 @@
 
 (function () {
   var CLASS_ERROR_BUTTON = 'error__button';
-  var NEW_TEXT_BUTTON = 'ок';
   var REPORT_UNKNOWN_ERROR = 'Статус ошибки: ';
   var TIMEOUT_REQUEST = 10000;
 
@@ -43,9 +42,9 @@
   var renderMessageError = function (element, result) {
     if (typeof result === 'string') {
       element.textContent = xhrStatusMap[result];
-      return
+      return;
     }
-    element.textContent = xhrStatusMap[result.status] ?  element.textContent = xhrStatusMap[result.status] : element.textContent = REPORT_UNKNOWN_ERROR + result.status + ' ' + result.statusText;
+    element.textContent = xhrStatusMap[result.status] ? element.textContent = xhrStatusMap[result.status] : element.textContent = REPORT_UNKNOWN_ERROR + result.status + ' ' + result.statusText;
   };
 
   var deleteErrorLoadImg = function () {

@@ -3,8 +3,7 @@
 (function () {
   var MAX_COUNT_COMMENTS_IN_PAGE = 5;
   var CLASS_BODY_WHEN_BIG_PICTURE_OPEN = 'modal-open';
-  var DESCRIPTION_OF_COUNT_RENDER_COMMETS = ' из ';
-  var DESCRIPTION_OF_COUNT_COMMETS = ' комментариев';
+
   var INCREMENT_STEP = 5;
 
   var Selector = {
@@ -34,7 +33,6 @@
   var bigPicture = document.querySelector(Selector.BIG_PICTURE);
   var bigPictureCommentList = bigPicture.querySelector(Selector.COMMENTS_LIST);
   var bigPictureCountRenderComments = bigPicture.querySelector(Selector.COUNT_RENDER_COMMENTS);
-  var bigPictureCountComments = bigPicture.querySelector(Selector.COUNT_COMMENTS);
   var pageBody = document.querySelector(Selector.PAGE_BODY);
   var buttonExitBigPhoto = bigPicture.querySelector(Selector.BIG_PICTURE_EXIT);
   var templateComment = document.querySelector(Selector.TEMPLATE_SOCIAL_COMMENT);
@@ -76,7 +74,7 @@
       var renderCommentsList = function (commentList) {
         if (commentList.length <= counterOfDisplayedComments) {
           buttonCommentsLoader.classList.add(window.utils.CLASS_HIDDEN);
-          buttonCommentsLoader.removeEventListener('click', onButtonCommentsLoader)
+          buttonCommentsLoader.removeEventListener('click', onButtonCommentsLoader);
         }
         var cloneTemplateComment = null;
         for (var i = 0; i < counterOfDisplayedComments && i < commentList.length; i++) {

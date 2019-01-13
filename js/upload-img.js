@@ -202,7 +202,7 @@
   };
 
   var onCloseFormUploadFilePressEsc = function (evt) {
-    if (evt.keyCode === window.utils.Keydown.ESC  && document.activeElement !==  window.uploadImg.inputComments) {
+    if (evt.keyCode === window.utils.Keydown.ESC && document.activeElement !== window.uploadImg.inputComments) {
       onCloseFormUploadFile();
     }
   };
