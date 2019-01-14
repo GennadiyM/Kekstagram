@@ -6,35 +6,37 @@
   var ERROR_CONNECT = '600';
   var ERROR_TIMEOUT = '601';
 
+  // var runShowFilter = function (show) {
+  //   window.backend.countLoad++;
+  //   if (window.backend.countLoad++ === ){
+  //     show();
+  //   }
+  // }
+
   window.backend = {
-    load: function (getMap, showThumbnails, onError, showFilter) {
+    countLoad: 0,
+    load: function (getMap, showThumbnails, onError) {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
-
       xhr.addEventListener('load', function () {
         if (xhr.status === 200) {
           showThumbnails(xhr.response);
-          showFilter();
           getMap(xhr.response);
         } else {
           onError(xhr.status);
         }
       });
-
       xhr.addEventListener('error', function () {
         onError(ERROR_CONNECT);
       });
-
       xhr.addEventListener('timeout', function () {
         onError(ERROR_TIMEOUT);
       });
-
       xhr.open('GET', URL_LOAD);
       xhr.send();
     },
     save: function (onLoad, onError, data) {
       var xhr = new XMLHttpRequest();
-
       xhr.addEventListener('load', function () {
         if (xhr.status === 200) {
           onLoad();
@@ -45,7 +47,6 @@
       xhr.addEventListener('error', function () {
         onError(ERROR_CONNECT);
       });
-
       xhr.addEventListener('timeout', function () {
         onError(ERROR_TIMEOUT);
       });
