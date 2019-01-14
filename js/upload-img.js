@@ -173,13 +173,7 @@
         sliderMouseMoveEvt.preventDefault();
         var mouseStartPos = sliderCharacteristics.pinStartCoordinates + sliderCharacteristics.pinClickCoordinate;
         sliderCharacteristics.pinShift = sliderMouseMoveEvt.clientX - mouseStartPos;
-        filterInputLevelValue.value = Math.round(sliderCharacteristics.pinShift * PROPORTION_FACTOR / sliderCharacteristics.widthSliderBar) + sliderCharacteristics.value;
-        if (filterInputLevelValue.value < MIN_VALUE_SLIDER) {
-          filterInputLevelValue.value = MIN_VALUE_SLIDER;
-        }
-        if (filterInputLevelValue.value > MAX_VALUE_SLIDER) {
-          filterInputLevelValue.value = MAX_VALUE_SLIDER;
-        }
+        filterInputLevelValue.value = Math.min(MAX_VALUE_SLIDER, Math.max(Math.round(sliderCharacteristics.pinShift * PROPORTION_FACTOR / sliderCharacteristics.widthSliderBar) + sliderCharacteristics.value, MIN_VALUE_SLIDER));
         renderSlider(filterInputLevelValue.value);
       };
 

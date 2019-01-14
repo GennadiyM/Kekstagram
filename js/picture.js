@@ -114,7 +114,7 @@
         if (a.comments > b.comments) {
           return -1;
         }
-        return 0;
+        return a.comments < b.comments;
       });
     },
   };
