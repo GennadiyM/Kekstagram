@@ -6,7 +6,7 @@
   var ERROR_CONNECT = '600';
   var ERROR_TIMEOUT = '601';
 
-  var addEventListenerOnRequest = function (request, callbackError) {
+  var addEventListenersToRequest = function (request, callbackError) {
     request.addEventListener('error', function () {
       callbackError(ERROR_CONNECT);
     });
@@ -27,7 +27,7 @@
           onError(xhr.status);
         }
       });
-      addEventListenerOnRequest(xhr, onError);
+      addEventListenersToRequest(xhr, onError);
       xhr.open('GET', URL_LOAD);
       xhr.send();
     },
@@ -40,7 +40,7 @@
           onError(xhr);
         }
       });
-      addEventListenerOnRequest(xhr, onError);
+      addEventListenersToRequest(xhr, onError);
       xhr.open('POST', URL_SEND);
       xhr.send(data);
     },
