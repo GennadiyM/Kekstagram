@@ -70,8 +70,8 @@
   var SCALE_VALUE_DEFAULT = 100;
   var PROPORTION_FACTOR = 100;
   var TAG_NAME_FOR_DELEGATION_FILTER = 'SPAN';
-  var NAME_DEFAULT_FILTER = 'CHROME';
-  var VALUE_DEFAULT_SLIDER = 20;
+  var NAME_DEFAULT_FILTER = 'HEAT';
+  var VALUE_DEFAULT_SLIDER = 100;
   var MAX_VALUE_SLIDER = 100;
   var MIN_VALUE_SLIDER = 0;
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
@@ -102,7 +102,7 @@
   var formUploadFile = document.querySelector(Identifier.FORM_UPLOAD_FILE);
   var uploadForm = document.querySelector(Identifier.UPLOAD_FORM);
   var formChangeUploadFileExit = document.querySelector(Selector.IMG_UPLOAD_EXIT);
-  var filterList = document.querySelector(Selector.FILTER_LIST);
+  var filterListNode = document.querySelector(Selector.FILTER_LIST);
   var scaleControlSmaller = document.querySelector(Selector.SCALE_SMALLER);
   var scaleControlBigger = document.querySelector(Selector.SCALE_BIGGER);
   var formChangeUploadFile = document.querySelector(Selector.IMG_UPLOAD_OVERLAY);
@@ -244,8 +244,8 @@
     formChangeUploadFileExit.addEventListener('keydown', onCloseFormUploadFilePressEnter);
     document.addEventListener('keydown', onCloseFormUploadFilePressEsc);
     filterSliderBar.addEventListener('mousedown', onSliderMouseDown);
-    filterList.addEventListener('click', onChangeFilter);
-    filterList.addEventListener('keydown', onChangeFilterPressEnter);
+    filterListNode.addEventListener('click', onChangeFilter);
+    filterListNode.addEventListener('keydown', onChangeFilterPressEnter);
     scaleControlBigger.addEventListener('click', window.scaleImg.onChangeScaleBigger);
     scaleControlSmaller.addEventListener('click', window.scaleImg.onChangeScaleSmaller);
     window.uploadImg.inputHashtags.addEventListener('input', window.validation.onHashtagValidation);
@@ -263,14 +263,15 @@
     formChangeUploadFileExit.removeEventListener('click', onCloseFormUploadFile);
     formChangeUploadFileExit.removeEventListener('keydown', onCloseFormUploadFilePressEnter);
     document.removeEventListener('keydown', onCloseFormUploadFilePressEsc);
-    filterList.removeEventListener('click', onChangeFilter);
-    filterList.removeEventListener('keydown', onChangeFilterPressEnter);
+    filterListNode.removeEventListener('click', onChangeFilter);
+    filterListNode.removeEventListener('keydown', onChangeFilterPressEnter);
     scaleControlBigger.removeEventListener('click', window.scaleImg.onChangeScaleBigger);
     scaleControlSmaller.removeEventListener('click', window.scaleImg.onChangeScaleSmaller);
     window.uploadImg.inputHashtags.removeEventListener('input', window.validation.onHashtagValidation);
     window.uploadImg.inputComments.removeEventListener('input', window.validation.onCommentValidation);
     uploadForm.removeEventListener('submit', onSubmitForm);
-
+    window.uploadImg.inputHashtags.value = null;
+    window.uploadImg.inputComments.value = null;
   };
 
   formUploadFile.addEventListener('change', onOpenFormUploadFile);

@@ -5,7 +5,6 @@
   var REPORT_UNKNOWN_ERROR = 'Статус ошибки: ';
   var TIMEOUT_REQUEST = 10000;
 
-
   var Identifier = {
     SUCCESS: '#success',
     ERROR: '#error',
@@ -38,7 +37,6 @@
   var successButton = messageSuccess.querySelector(Selector.SUCCESS_BUTTON);
   var main = document.querySelector(Selector.MAIN);
 
-
   var renderMessageError = function (element, result) {
     if (typeof result === 'string') {
       element.textContent = xhrStatusMap[result];
@@ -58,6 +56,7 @@
       deleteErrorLoadImg();
     }
   };
+
   var deleteErrorLoadImgPressEsc = function (evt) {
     if (evt.keyCode === window.utils.Keydown.ESC) {
       deleteErrorLoadImg();

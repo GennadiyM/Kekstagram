@@ -31,7 +31,7 @@
   var counterOfDisplayedComments = MAX_COUNT_COMMENTS_IN_PAGE;
 
   var bigPicture = document.querySelector(Selector.BIG_PICTURE);
-  var bigPictureCommentList = bigPicture.querySelector(Selector.COMMENTS_LIST);
+  var bigPictureCommentListNode = bigPicture.querySelector(Selector.COMMENTS_LIST);
   var bigPictureCountRenderComments = bigPicture.querySelector(Selector.COUNT_RENDER_COMMENTS);
   var pageBody = document.querySelector(Selector.PAGE_BODY);
   var buttonExitBigPhoto = bigPicture.querySelector(Selector.BIG_PICTURE_EXIT);
@@ -65,8 +65,8 @@
       var onButtonCommentsLoader = function (evt) {
         evt.preventDefault();
         counterOfDisplayedComments += INCREMENT_STEP;
-        bigPictureCommentList.innerHTML = '';
-        renderCommentsList(commentList);
+        bigPictureCommentListNode.innerHTML = '';
+        renderCommentsList(comments);
       };
 
       var renderCommentsList = function (commentList) {
@@ -78,7 +78,7 @@
         for (var i = 0; i < counterOfDisplayedComments && i < commentList.length; i++) {
           bigPictureCountRenderComments.textContent = i + 1 + commentDescriptionText.DESCRIPTION_BEGIN + commentList.length + commentDescriptionText.DESCRIPTION_END;
           cloneTemplateComment = templateComment.cloneNode(true);
-          bigPictureCommentList.appendChild(cloneTemplateComment);
+          bigPictureCommentListNode.appendChild(cloneTemplateComment);
           cloneTemplateComment.querySelector(Selector.SOCIAL_PICTURE).src = commentList[i].avatar;
           cloneTemplateComment.querySelector(Selector.SOCIAL_TEXT).textContent = commentList[i].message;
         }
@@ -92,9 +92,9 @@
       bigPicture.querySelector(Selector.URL_BIG_PICTURE).src = data.url;
       bigPicture.querySelector(Selector.LIKES_COUNT).textContent = data.likes;
       bigPicture.querySelector(Selector.SOCIAL_CAPTION).textContent = data.description;
-      bigPictureCommentList.innerHTML = '';
-      var commentList = data.comments.slice();
-      renderCommentsList(commentList);
+      bigPictureCommentListNode.innerHTML = '';
+      var comments = data.comments.slice();
+      renderCommentsList(comments);
     },
   };
 })();
