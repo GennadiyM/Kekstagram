@@ -45,9 +45,7 @@
     document.removeEventListener('keydown', onCloseBigPhotoPressEsc);
     buttonExitBigPhoto.removeEventListener('keydown', onCloseBigPhotoPressEnter);
     counterOfDisplayedComments = MAX_COUNT_COMMENTS_IN_PAGE;
-    if (buttonCommentsLoader.classList.contains(window.utils.CLASS_HIDDEN)) {
-      buttonCommentsLoader.classList.remove(window.utils.CLASS_HIDDEN);
-    }
+    buttonCommentsLoader.classList.toggle(window.utils.CLASS_HIDDEN, false);
   };
 
   var onCloseBigPhotoPressEsc = function (evt) {

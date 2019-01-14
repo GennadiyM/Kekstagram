@@ -121,7 +121,7 @@
     }
   };
 
-  var renderLoadImg = function () {
+  var renderUploadedImg = function () {
     var file = formUploadFile.files[0];
     var fileName = file.name.toLowerCase();
 
@@ -235,7 +235,7 @@
   };
 
   var onOpenFormUploadFile = function () {
-    renderLoadImg();
+    renderUploadedImg();
     uploadForm.addEventListener('submit', onSubmitForm);
     sliderCharacteristics = {};
     formChangeUploadFile.classList.remove(window.utils.CLASS_HIDDEN);

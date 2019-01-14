@@ -6,13 +6,6 @@
   var ERROR_CONNECT = '600';
   var ERROR_TIMEOUT = '601';
 
-  // var runShowFilter = function (show) {
-  //   window.backend.countLoad++;
-  //   if (window.backend.countLoad++ === ){
-  //     show();
-  //   }
-  // }
-
   window.backend = {
     countLoad: 0,
     load: function (getMap, showThumbnails, onError) {
