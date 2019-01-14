@@ -6,8 +6,16 @@
   var ERROR_CONNECT = '600';
   var ERROR_TIMEOUT = '601';
 
+  var addEventListenerOnRequest = function (request, callbackError) {
+    request.addEventListener('error', function () {
+      callbackError(ERROR_CONNECT);
+    });
+    request.addEventListener('timeout', function () {
+      callbackError(ERROR_TIMEOUT);
+    });
+  };
+
   window.backend = {
-    countLoad: 0,
     load: function (getMap, showThumbnails, onError) {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
@@ -19,12 +27,7 @@
           onError(xhr.status);
         }
       });
-      xhr.addEventListener('error', function () {
-        onError(ERROR_CONNECT);
-      });
-      xhr.addEventListener('timeout', function () {
-        onError(ERROR_TIMEOUT);
-      });
+      addEventListenerOnRequest(xhr, onError);
       xhr.open('GET', URL_LOAD);
       xhr.send();
     },
@@ -37,12 +40,7 @@
           onError(xhr);
         }
       });
-      xhr.addEventListener('error', function () {
-        onError(ERROR_CONNECT);
-      });
-      xhr.addEventListener('timeout', function () {
-        onError(ERROR_TIMEOUT);
-      });
+      addEventListenerOnRequest(xhr, onError);
       xhr.open('POST', URL_SEND);
       xhr.send(data);
     },

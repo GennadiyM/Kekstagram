@@ -41,8 +41,8 @@
     };
   };
 
-  var addEventListenerOnButtonFilter = function (element, cb) {
-    element.addEventListener('click', window.debounce(cb));
+  var addEventListenerOnButtonFilter = function (element, buttonClickCallback) {
+    element.addEventListener('click', window.debounce(buttonClickCallback));
   };
 
   var getRandomThumbnailList = function (data, count) {
@@ -57,12 +57,12 @@
     return randomThumbnailList;
   };
 
-  var getLoadHandler = function (maxCountImg, callback) {
+  var getLoadHandler = function (maxCountImg, showFilterCallback) {
     var counter = 0;
     var runShowBlockFilter = function () {
       counter++;
       if (counter >= maxCountImg) {
-        callback();
+        showFilterCallback();
       }
     };
     return runShowBlockFilter;
@@ -109,5 +109,5 @@
       });
     },
   };
-  window.backend.load(window.picture.getThumbnailMap, window.picture.renderThumbnails, window.message.onErrorLoadPreview, window.picture.showBlockFilter);
+  window.backend.load(window.picture.getThumbnailMap, window.picture.renderThumbnails, window.message.onErrorLoadPreview);
 })();
