@@ -9,18 +9,14 @@
   window.scaleImg = {
     onChangeScaleBigger: function () {
       var modifiedValueScale = parseInt(scaleControlValue.value, 10) + STEP_SCALE;
-      if (Math.max(window.uploadImg.Filters.SCALE.maxValueFilter, modifiedValueScale) > window.uploadImg.Filters.SCALE.maxValueFilter) {
-        modifiedValueScale = window.uploadImg.Filters.SCALE.maxValueFilter;
-      }
+      modifiedValueScale = Math.min(window.uploadImg.Filters.SCALE.maxValueFilter, Math.max(modifiedValueScale, window.uploadImg.Filters.SCALE.minValueFilter));
       scaleControlValue.value = modifiedValueScale + '%';
       window.uploadImg.uploadImgPreview.style.transform = window.uploadImg.Filters.SCALE.cssFilter(parseInt(scaleControlValue.value, 10));
       return window.uploadImg.uploadImgPreview;
     },
     onChangeScaleSmaller: function () {
       var modifiedValueScale = parseInt(scaleControlValue.value, 10) - STEP_SCALE;
-      if (Math.min(window.uploadImg.Filters.SCALE.minValueFilter, modifiedValueScale) < window.uploadImg.Filters.SCALE.minValueFilter) {
-        modifiedValueScale = window.uploadImg.Filters.SCALE.minValueFilter;
-      }
+      modifiedValueScale = Math.min(window.uploadImg.Filters.SCALE.maxValueFilter, Math.max(modifiedValueScale, window.uploadImg.Filters.SCALE.minValueFilter));
       scaleControlValue.value = modifiedValueScale + '%';
       window.uploadImg.uploadImgPreview.style.transform = window.uploadImg.Filters.SCALE.cssFilter(parseInt(scaleControlValue.value, 10));
       return window.uploadImg.uploadImgPreview;

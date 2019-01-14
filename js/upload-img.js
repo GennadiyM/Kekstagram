@@ -74,6 +74,7 @@
   var VALUE_DEFAULT_SLIDER = 20;
   var MAX_VALUE_SLIDER = 100;
   var MIN_VALUE_SLIDER = 0;
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
   var Identifier = {
     UPLOAD_FORM: '#upload-select-image',
@@ -117,6 +118,25 @@
   var removeClassHidden = function () {
     if (slider.classList.contains(window.utils.CLASS_HIDDEN)) {
       slider.classList.remove(window.utils.CLASS_HIDDEN);
+    }
+  };
+
+  var renderUploadedImg = function () {
+    var file = formUploadFile.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        window.uploadImg.uploadImgPreview.src = reader.result;
+      });
+
+      reader.readAsDataURL(file);
     }
   };
 
@@ -173,13 +193,7 @@
         sliderMouseMoveEvt.preventDefault();
         var mouseStartPos = sliderCharacteristics.pinStartCoordinates + sliderCharacteristics.pinClickCoordinate;
         sliderCharacteristics.pinShift = sliderMouseMoveEvt.clientX - mouseStartPos;
-        filterInputLevelValue.value = Math.round(sliderCharacteristics.pinShift * PROPORTION_FACTOR / sliderCharacteristics.widthSliderBar) + sliderCharacteristics.value;
-        if (filterInputLevelValue.value < MIN_VALUE_SLIDER) {
-          filterInputLevelValue.value = MIN_VALUE_SLIDER;
-        }
-        if (filterInputLevelValue.value > MAX_VALUE_SLIDER) {
-          filterInputLevelValue.value = MAX_VALUE_SLIDER;
-        }
+        filterInputLevelValue.value = Math.min(MAX_VALUE_SLIDER, Math.max(Math.round(sliderCharacteristics.pinShift * PROPORTION_FACTOR / sliderCharacteristics.widthSliderBar) + sliderCharacteristics.value, MIN_VALUE_SLIDER));
         renderSlider(filterInputLevelValue.value);
       };
 
@@ -202,7 +216,7 @@
   };
 
   var onCloseFormUploadFilePressEsc = function (evt) {
-    if (evt.keyCode === window.utils.Keydown.ESC  && document.activeElement !==  window.uploadImg.inputComments) {
+    if (evt.keyCode === window.utils.Keydown.ESC && document.activeElement !== window.uploadImg.inputComments) {
       onCloseFormUploadFile();
     }
   };
@@ -221,6 +235,7 @@
   };
 
   var onOpenFormUploadFile = function () {
+    renderUploadedImg();
     uploadForm.addEventListener('submit', onSubmitForm);
     sliderCharacteristics = {};
     formChangeUploadFile.classList.remove(window.utils.CLASS_HIDDEN);
@@ -255,6 +270,7 @@
     window.uploadImg.inputHashtags.removeEventListener('input', window.validation.onHashtagValidation);
     window.uploadImg.inputComments.removeEventListener('input', window.validation.onCommentValidation);
     uploadForm.removeEventListener('submit', onSubmitForm);
+
   };
 
   formUploadFile.addEventListener('change', onOpenFormUploadFile);
