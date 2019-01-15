@@ -111,7 +111,7 @@
   var pinSlider = formChangeUploadFile.querySelector(Selector.SLIDER_PIN);
   var filterSliderDepthIdentifier = formChangeUploadFile.querySelector(Selector.SLIDER_DEPTH_IDENTIFIER);
   var filterInputLevelValue = formChangeUploadFile.querySelector(Selector.EFFECT_LEVEL_VALUE);
-  var uploadImgPreview = formChangeUploadFile.querySelector(Selector.UPLOAD_IMG);
+  window.uploadImg.preview = formChangeUploadFile.querySelector(Selector.UPLOAD_IMG);
   window.uploadImg.inputHashtags = formChangeUploadFile.querySelector(Selector.INPUT_HASHTAGS);
   window.uploadImg.inputComments = formChangeUploadFile.querySelector(Selector.INPUT_COMMENTS);
 
@@ -127,7 +127,7 @@
       var reader = new FileReader();
 
       reader.addEventListener('load', function () {
-        uploadImgPreview.src = reader.result;
+        window.uploadImg.preview.src = reader.result;
       });
 
       reader.readAsDataURL(file);
@@ -145,22 +145,22 @@
       currentFilter = evt.target.id.toUpperCase();
       if (window.uploadImg.Filters[currentFilter].hideSlider) {
         slider.classList.add(window.utils.CLASS_HIDDEN);
-        uploadImgPreview.style.filter = '';
-        return uploadImgPreview;
+        window.uploadImg.preview.style.filter = '';
+        return window.uploadImg.preview;
       }
       slider.classList.toggle(window.utils.CLASS_HIDDEN, false);
       filterInputLevelValue.value = MAX_VALUE_SLIDER;
       renderSlider(MAX_VALUE_SLIDER);
       sliderCharacteristics.changeValue = parseInt(filterInputLevelValue.value, 10);
-      return uploadImgPreview;
+      return window.uploadImg.preview;
     }
-    return uploadImgPreview;
+    return window.uploadImg.preview;
   };
 
   var renderSlider = function (value) {
     filterSliderDepthIdentifier.style.width = value + '%';
     pinSlider.style.left = value + '%';
-    uploadImgPreview.style.filter = window.uploadImg.Filters[currentFilter].cssFilter(value);
+    window.uploadImg.preview.style.filter = window.uploadImg.Filters[currentFilter].cssFilter(value);
   };
 
   var onChangeFilterPressEnter = function (evt) {
@@ -256,7 +256,7 @@
     filterInputLevelValue.value = VALUE_DEFAULT_SLIDER;
     currentFilter = NAME_DEFAULT_FILTER;
     window.scaleImg.scaleControlValue.value = SCALE_VALUE_DEFAULT + '%';
-    uploadImgPreview.style = '';
+    window.uploadImg.preview.style = '';
     filterInputLevelValue.value = VALUE_DEFAULT_SLIDER;
     formChangeUploadFileExit.removeEventListener('click', onCloseFormUploadFile);
     formChangeUploadFileExit.removeEventListener('keydown', onCloseFormUploadFilePressEnter);
