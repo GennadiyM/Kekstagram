@@ -45,7 +45,6 @@
     element.textContent = xhrStatusMap[result.status] ? element.textContent = xhrStatusMap[result.status] : element.textContent = REPORT_UNKNOWN_ERROR + result.status + ' ' + result.statusText;
   };
 
-
   var onDeleteErrorLoadImg = function () {
     messageError.remove();
     document.removeEventListener('keydown', onDeleteErrorLoadImgPressEsc);
@@ -65,7 +64,6 @@
   };
 
   var onDeleteMessageSuccess = function () {
-
     messageSuccess.remove();
   };
 
