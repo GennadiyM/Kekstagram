@@ -9,6 +9,7 @@
   var ERROR_OUTLINE = '2px solid red';
 
   var ErrorMessageList = {
+
     START_ERROR: 'Хэш-тег должен начинаться с символа # (решётка)!',
     CONTENT_ERROR: 'Хеш-тег не может состоять только из одной решётки!',
     QUANTITY_ERROR: 'Количество хэш-тегов не может превышать ' + MAX_HASHTAGS_COUNT + '!',

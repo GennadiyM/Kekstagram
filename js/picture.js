@@ -79,6 +79,7 @@
   window.picture = {
     renderThumbnails: function (thumbnailList) {
       var onLoadHandler = getLoadHandler(thumbnailList.length, showBlockFilter);
+
       thumbnailList.forEach(function (item) {
         var cloneTemplateUserPicture = templateUserPicture.cloneNode(true);
         picturesListNode.appendChild(cloneTemplateUserPicture);

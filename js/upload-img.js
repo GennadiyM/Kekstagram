@@ -125,11 +125,9 @@
 
     if (matches) {
       var reader = new FileReader();
-
       reader.addEventListener('load', function () {
         window.uploadImg.preview.src = reader.result;
       });
-
       reader.readAsDataURL(file);
     }
   };
@@ -256,6 +254,7 @@
     currentFilter = NAME_DEFAULT_FILTER;
     window.scaleImg.controlValue.value = SCALE_VALUE_DEFAULT + '%';
     window.uploadImg.preview.style = '';
+
     filterInputLevelValue.value = VALUE_DEFAULT_SLIDER;
     formChangeUploadFileExit.removeEventListener('click', onCloseFormUploadFile);
     formChangeUploadFileExit.removeEventListener('keydown', onCloseFormUploadFilePressEnter);

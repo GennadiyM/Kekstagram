@@ -22,6 +22,7 @@
     COMMENTS_LOADER: '.comments-loader',
   };
 
+
   var CommentDescriptionText = {
     DESCRIPTION_BEGIN: ' из ',
     DESCRIPTION_END: ' комментариев',
