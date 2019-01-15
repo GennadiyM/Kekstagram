@@ -250,9 +250,8 @@
   };
 
   var onCloseFormUploadFile = function () {
-    formChangeUploadFile.reset();
+    uploadForm.reset();
     formChangeUploadFile.classList.add(window.utils.CLASS_HIDDEN);
-    formUploadFile.value = null;
     filterInputLevelValue.value = VALUE_DEFAULT_SLIDER;
     currentFilter = NAME_DEFAULT_FILTER;
     window.scaleImg.scaleControlValue.value = SCALE_VALUE_DEFAULT + '%';
