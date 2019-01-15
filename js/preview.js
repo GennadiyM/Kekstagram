@@ -22,7 +22,7 @@
     COMMENTS_LOADER: '.comments-loader',
   };
 
-  var commentDescriptionText = {
+  var CommentDescriptionText = {
     DESCRIPTION_BEGIN: ' из ',
     DESCRIPTION_END: ' комментариев',
   };
@@ -75,7 +75,7 @@
         }
         var cloneTemplateComment = null;
         for (var i = 0; i < counterOfDisplayedComments && i < commentList.length; i++) {
-          bigPictureCountRenderComments.textContent = i + 1 + commentDescriptionText.DESCRIPTION_BEGIN + commentList.length + commentDescriptionText.DESCRIPTION_END;
+          bigPictureCountRenderComments.textContent = i + 1 + CommentDescriptionText.DESCRIPTION_BEGIN + commentList.length + CommentDescriptionText.DESCRIPTION_END;
           cloneTemplateComment = templateComment.cloneNode(true);
           bigPictureCommentListNode.appendChild(cloneTemplateComment);
           cloneTemplateComment.querySelector(Selector.SOCIAL_PICTURE).src = commentList[i].avatar;

@@ -4,7 +4,7 @@
   var STEP_SCALE = 25;
   var SELECTOR_SCALE_VALUE = '.scale__control--value';
 
-  var scaleControlValue = document.querySelector(SELECTOR_SCALE_VALUE);
+  var controlValue = document.querySelector(SELECTOR_SCALE_VALUE);
 
   window.scaleImg = {
     onChangeScaleBigger: function () {
@@ -21,6 +21,6 @@
       window.uploadImg.preview.style.transform = window.uploadImg.Filters.SCALE.cssFilter(parseInt(scaleControlValue.value, 10));
       return window.uploadImg.preview;
     },
-    scaleControlValue: scaleControlValue,
+    controlValue: controlValue,
   };
 })();

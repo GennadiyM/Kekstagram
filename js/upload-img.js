@@ -254,7 +254,7 @@
     formChangeUploadFile.classList.add(window.utils.CLASS_HIDDEN);
     filterInputLevelValue.value = VALUE_DEFAULT_SLIDER;
     currentFilter = NAME_DEFAULT_FILTER;
-    window.scaleImg.scaleControlValue.value = SCALE_VALUE_DEFAULT + '%';
+    window.scaleImg.controlValue.value = SCALE_VALUE_DEFAULT + '%';
     window.uploadImg.preview.style = '';
     filterInputLevelValue.value = VALUE_DEFAULT_SLIDER;
     formChangeUploadFileExit.removeEventListener('click', onCloseFormUploadFile);
