@@ -15,6 +15,7 @@
     REPETITION_ERROR: 'Хеш-теги не могут быть одинаковым!',
     LENGTH_ERROR: 'Длин хэш-тега не может превышать ' + HASHTAG_MAX_LENGTH + ' символов!',
     COMMENT_ERROR: 'Длина комментария не может превышать ' + COMMENT_MAX_LENGTH + ' символов!',
+    SPLIT_ERROR: 'Хэш-теги должны разделяться пробелами',
     NO_ERROR: ''
   };
 
@@ -35,6 +36,10 @@
             window.uploadImg.inputHashtags.style.outline = ERROR_OUTLINE;
             return ErrorMessageList.START_ERROR;
           }
+          if (hashtag.lastIndexOf(HASHTAG_FIRST_SYMBOL) > 0) {
+            window.uploadImg.inputHashtags.style.outline = ERROR_OUTLINE;
+            return ErrorMessageList.SPLIT_ERROR;
+          }
           if (hashtag === hashtagsToArray[j]) {
             window.uploadImg.inputHashtags.style.outline = ERROR_OUTLINE;
             return ErrorMessageList.REPETITION_ERROR;
@@ -47,6 +52,10 @@
         if (hashtag.length === HASHTAG_MIN_LENGTH && hashtag === HASHTAG_FIRST_SYMBOL) {
           window.uploadImg.inputHashtags.style.outline = ERROR_OUTLINE;
           return ErrorMessageList.CONTENT_ERROR;
+        }
+        if (hashtag.lastIndexOf(HASHTAG_FIRST_SYMBOL) > 0) {
+          window.uploadImg.inputHashtags.style.outline = ERROR_OUTLINE;
+          return ErrorMessageList.SPLIT_ERROR;
         }
         if (hashtag.length > HASHTAG_MAX_LENGTH) {
           window.uploadImg.inputHashtags.style.outline = ERROR_OUTLINE;

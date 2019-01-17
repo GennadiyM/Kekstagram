@@ -9,6 +9,7 @@
   var MAX_VALUE_SLIDER = 100;
   var MIN_VALUE_SLIDER = 0;
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  var UPLOAD_DEFAULT_IMG = 'img/upload-default-image.jpg';
 
   window.uploadImg = {
     Filters: {
@@ -251,6 +252,7 @@
 
   var onCloseFormUploadFile = function () {
     uploadForm.reset();
+    window.uploadImg.preview.src = UPLOAD_DEFAULT_IMG;
     formChangeUploadFile.classList.add(window.utils.CLASS_HIDDEN);
     filterInputLevelValue.value = VALUE_DEFAULT_SLIDER;
     currentFilter = NAME_DEFAULT_FILTER;
